@@ -188,7 +188,7 @@ export function ProjectsTable() {
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the project
-              "{deleteProject?.title}" and remove all associated data.
+              &quot;{deleteProject?.title}&quot; and remove all associated data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

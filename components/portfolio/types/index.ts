@@ -46,6 +46,25 @@ export interface ProjectLink {
   docs?: string
 }
 
+export interface ProjectImage {
+  id?: number
+  projectId?: number
+  url: string
+  caption?: string
+  type: 'SCREENSHOT' | 'MOCKUP' | 'LOGO' | 'DIAGRAM' | 'OTHER'
+  order?: number
+}
+
+export interface ProjectReview {
+  id?: number
+  projectId?: number
+  author: string
+  role?: string
+  company?: string
+  content: string
+  rating?: number
+}
+
 export interface Project {
   id: number
   title: string
@@ -67,6 +86,8 @@ export interface Project {
   features: string[]
   metrics?: ProjectMetric
   links?: ProjectLink
+  images?: ProjectImage[]
+  reviews?: ProjectReview[]
 }
 
 export interface CreateProjectRequest {
@@ -76,8 +97,8 @@ export interface CreateProjectRequest {
   type: string
   description: string
   image?: string
-  images?: []
-  reviews?: [] 
+  images?: ProjectImage[]
+  reviews?: ProjectReview[]
   client?: string
   duration?: string
   year?: string

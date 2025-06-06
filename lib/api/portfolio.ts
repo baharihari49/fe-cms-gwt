@@ -1,6 +1,5 @@
 // lib/api/projects.ts
 import {
-  Project,
   CreateProjectRequest,
   UpdateProjectRequest,
   ProjectsResponse,
@@ -12,11 +11,6 @@ import {
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 
 // Fungsi bantuan untuk mengatur / membaca cookie
-function setCookie(name: string, value: string, days = 7) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString()
-  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`
-}
-
 function getCookie(name: string): string | null {
   return (
     document.cookie

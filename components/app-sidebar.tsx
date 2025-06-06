@@ -56,7 +56,7 @@ navMain: [
     url: "/posts",
     icon: FileText,
     items: [
-      { title: "All Posts", url: "/posts" },
+      { title: "All Posts", url: "/blog/posts" },
       { title: "Add New", url: "/posts/new" },
       { title: "Categories", url: "/categories" },
       { title: "Tags", url: "/tags" },

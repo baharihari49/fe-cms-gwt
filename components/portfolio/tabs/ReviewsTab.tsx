@@ -136,7 +136,7 @@ export function ReviewsTab({ currentReviews, onReviewsChange }: ReviewsTabProps)
                     </div>
                   </div>
                   <p className="text-sm text-gray-700 italic">
-                    "{review.content}"
+                    &quot;{review.content}&quot;
                   </p>
                 </div>
                 <Button
