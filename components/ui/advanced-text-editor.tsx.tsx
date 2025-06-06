@@ -438,7 +438,7 @@ export default function AdvancedTextEditor({
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] p-4',
+        class: 'prose max-w-none focus:outline-none min-h-[200px] p-4',
       },
     },
   })
@@ -458,6 +458,8 @@ export default function AdvancedTextEditor({
       <style jsx global>{`
         .ProseMirror {
           outline: none;
+          font-size: 16px;
+          line-height: 1.7;
         }
         
         .ProseMirror pre {
@@ -468,13 +470,14 @@ export default function AdvancedTextEditor({
           border-radius: 0.5rem;
           overflow-x: auto;
           margin: 1rem 0;
+          font-size: 14px;
         }
         
         .ProseMirror pre code {
           color: inherit;
           padding: 0;
           background: none;
-          font-size: 0.9em;
+          font-size: inherit;
         }
         
         .ProseMirror code {
@@ -482,7 +485,8 @@ export default function AdvancedTextEditor({
           color: hsl(var(--muted-foreground));
           padding: 0.2em 0.4em;
           border-radius: 0.25rem;
-          font-size: 0.85em;
+          font-size: 14px;
+          font-family: 'JetBrains Mono', 'Menlo', 'Monaco', Consolas, 'Liberation Mono', 'Courier New', monospace;
         }
         
         .ProseMirror blockquote {
@@ -490,6 +494,7 @@ export default function AdvancedTextEditor({
           padding-left: 1rem;
           margin: 1rem 0;
           font-style: italic;
+          color: hsl(var(--muted-foreground));
         }
         
         .ProseMirror table {
@@ -498,6 +503,7 @@ export default function AdvancedTextEditor({
           width: 100%;
           margin: 1rem 0;
           overflow: hidden;
+          font-size: 15px;
         }
         
         .ProseMirror table td,
@@ -511,7 +517,7 @@ export default function AdvancedTextEditor({
         }
         
         .ProseMirror table th {
-          font-weight: bold;
+          font-weight: 600;
           text-align: left;
           background-color: hsl(var(--muted));
         }
@@ -525,9 +531,10 @@ export default function AdvancedTextEditor({
         }
         
         .ProseMirror mark {
-          background-color: yellow;
-          color: black;
+          background-color: rgb(255, 255, 0);
+          color: rgb(0, 0, 0);
           padding: 0.1em 0.2em;
+          border-radius: 0.125rem;
         }
         
         .ProseMirror img {
@@ -537,53 +544,82 @@ export default function AdvancedTextEditor({
           margin: 1rem 0;
         }
         
-        .ProseMirror h1,
-        .ProseMirror h2,
-        .ProseMirror h3,
-        .ProseMirror h4,
-        .ProseMirror h5,
-        .ProseMirror h6 {
-          line-height: 1.2;
-          margin-top: 2rem;
-          margin-bottom: 1rem;
-          font-weight: 600;
-        }
-        
         .ProseMirror h1 {
-          font-size: 2.25rem;
+          font-size: 2rem;
+          font-weight: 700;
+          line-height: 1.2;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
         }
         
         .ProseMirror h2 {
-          font-size: 1.875rem;
+          font-size: 1.625rem;
+          font-weight: 600;
+          line-height: 1.3;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
         }
         
         .ProseMirror h3 {
-          font-size: 1.5rem;
+          font-size: 1.375rem;
+          font-weight: 600;
+          line-height: 1.4;
+          margin-top: 1.25rem;
+          margin-bottom: 0.5rem;
+        }
+        
+        .ProseMirror h4,
+        .ProseMirror h5,
+        .ProseMirror h6 {
+          font-size: 1rem;
+          font-weight: 600;
+          line-height: 1.5;
+          margin-top: 1rem;
+          margin-bottom: 0.5rem;
         }
         
         .ProseMirror ul,
         .ProseMirror ol {
-          margin: 1rem 0;
-          padding-left: 2rem;
+          margin: 0.75rem 0;
+          padding-left: 1.5rem;
         }
         
         .ProseMirror li {
-          margin: 0.5rem 0;
+          margin: 0.25rem 0;
+          line-height: 1.7;
         }
         
         .ProseMirror p {
           margin: 1rem 0;
-          line-height: 1.6;
+          line-height: 1.7;
+        }
+        
+        .ProseMirror p:first-child {
+          margin-top: 0;
+        }
+        
+        .ProseMirror p:last-child {
+          margin-bottom: 0;
         }
         
         .ProseMirror a {
           color: hsl(var(--primary));
           text-decoration: underline;
-          text-underline-offset: 4px;
+          text-underline-offset: 2px;
+          text-decoration-thickness: 1px;
         }
         
         .ProseMirror a:hover {
-          text-decoration: none;
+          text-decoration-thickness: 2px;
+        }
+        
+        /* Placeholder styling */
+        .ProseMirror p.is-editor-empty:first-child::before {
+          color: hsl(var(--muted-foreground));
+          content: attr(data-placeholder);
+          float: left;
+          height: 0;
+          pointer-events: none;
         }
       `}</style>
     </div>
