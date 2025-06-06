@@ -11,7 +11,7 @@ import { ArrowLeft, Save, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { FormCreate } from "../../../../components/blog/form-create"
 import { blogAPI } from "@/lib/api/blog"
-import { CreatePostRequest, Category, Tag } from "@/components/blog/types/blog"
+import { CreatePostRequest, Category, Tag, Author } from "@/components/blog/types/blog"
 
 const postFormSchema = z.object({
   title: z.string().min(1, "Title is required").max(200, "Title must be less than 200 characters"),
@@ -28,18 +28,12 @@ const postFormSchema = z.object({
 
 type PostFormValues = z.infer<typeof postFormSchema>
 
-// Mock authors data
-const mockAuthors = [
-  { id: "cmbhos12s0000wwo713vddath", name: "Bahari", email: "baharihari49@gmail.com" },
-  { id: "2", name: "Jane Smith", email: "jane@example.com" },
-  { id: "3", name: "Bob Johnson", email: "bob@example.com" },
-]
-
 export default function CreatePostPage() {
   const router = useRouter()
   const [loading, setLoading] = React.useState(false)
   const [categories, setCategories] = React.useState<Category[]>([])
   const [tags, setTags] = React.useState<Tag[]>([])
+  const [authors, setAuthors] = React.useState<Author[]>([]) // Use state for authors
   const [selectedTags, setSelectedTags] = React.useState<string[]>([])
   const [tagSearch, setTagSearch] = React.useState("")
 
@@ -63,9 +57,10 @@ export default function CreatePostPage() {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const [categoriesRes, tagsRes] = await Promise.all([
+        const [categoriesRes, tagsRes, authorsRes] = await Promise.all([
           blogAPI.getCategories(),
           blogAPI.getTags(),
+          blogAPI.getAuthors(),
         ])
 
         if (categoriesRes.success) {
@@ -73,6 +68,10 @@ export default function CreatePostPage() {
         }
         if (tagsRes.success) {
           setTags(tagsRes.tags)
+        }
+
+        if( authorsRes.success) {
+          setAuthors(authorsRes.authors)
         }
       } catch (error) {
         console.error("Error fetching data:", error)
@@ -175,7 +174,7 @@ export default function CreatePostPage() {
         setSelectedTags={setSelectedTags}
         tagSearch={tagSearch}
         setTagSearch={setTagSearch}
-        mockAuthors={mockAuthors}
+        mockAuthors={authors} // Use the authors state here
       />
     </div>
   )

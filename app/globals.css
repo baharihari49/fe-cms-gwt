@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -45,71 +46,110 @@
 
 :root {
   --radius: 0.625rem;
+  
+  /* GWT Brand Colors */
+  --gwt-primary-blue: oklch(0.646 0.222 258.338); /* Blue-500 #3B82F6 */
+  --gwt-primary-blue-dark: oklch(0.577 0.245 258.338); /* Blue-600 #2563EB */
+  --gwt-primary-blue-darker: oklch(0.515 0.265 258.338); /* Blue-700 #1D4ED8 */
+  --gwt-primary-blue-light: oklch(0.708 0.170 258.338); /* Blue-400 #60A5FA */
+  --gwt-primary-blue-hover: oklch(0.531 0.255 258.338); /* Hover state - slightly darker than blue-600 */
+  --gwt-secondary-cyan: oklch(0.828 0.189 198.434); /* Cyan-400 #22D3EE */
+  --gwt-secondary-cyan-dark: oklch(0.746 0.221 198.434); /* Cyan-500 #06B6D4 */
+  --gwt-secondary-cyan-hover: oklch(0.670 0.245 198.434); /* Cyan-600 #0891B2 */
+  --gwt-secondary-cyan-light: oklch(0.943 0.070 198.434); /* Cyan-200 #A5F3FC */
+  --gwt-secondary-cyan-ultralight: oklch(0.971 0.035 198.434); /* Cyan-100 #CFFAFE */
+  
+  /* Main Theme Colors using GWT Brand */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  
+  /* Primary using GWT Blue */
+  --primary: var(--gwt-primary-blue);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  
+  /* Secondary using GWT Cyan */
+  --secondary: var(--gwt-secondary-cyan-ultralight);
+  --secondary-foreground: var(--gwt-primary-blue-dark);
+  
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  
+  /* Accent using GWT Cyan */
+  --accent: var(--gwt-secondary-cyan-light);
+  --accent-foreground: var(--gwt-primary-blue-dark);
+  
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --ring: var(--gwt-primary-blue);
+  
+  /* Chart colors using GWT theme */
+  --chart-1: var(--gwt-primary-blue);
+  --chart-2: var(--gwt-secondary-cyan);
+  --chart-3: var(--gwt-primary-blue-light);
+  --chart-4: var(--gwt-secondary-cyan-dark);
+  --chart-5: oklch(0.828 0.189 84.429);
+  
+  /* Sidebar using GWT colors */
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary: var(--gwt-primary-blue);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-accent: var(--gwt-secondary-cyan-light);
+  --sidebar-accent-foreground: var(--gwt-primary-blue-dark);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: var(--gwt-primary-blue);
 }
 
 .dark {
+  /* Dark mode with GWT theme */
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  
+  /* Primary in dark mode - lighter GWT blue */
+  --primary: var(--gwt-primary-blue-light);
+  --primary-foreground: oklch(0.145 0 0);
+  
+  /* Secondary in dark mode */
   --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
+  --secondary-foreground: var(--gwt-secondary-cyan-light);
+  
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
+  
+  /* Accent in dark mode */
   --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --accent-foreground: var(--gwt-secondary-cyan-light);
+  
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
+  --ring: var(--gwt-primary-blue-light);
+  
+  /* Dark mode charts */
+  --chart-1: var(--gwt-primary-blue-light);
+  --chart-2: var(--gwt-secondary-cyan);
+  --chart-3: var(--gwt-primary-blue);
+  --chart-4: var(--gwt-secondary-cyan-dark);
   --chart-5: oklch(0.645 0.246 16.439);
+  
+  /* Dark sidebar */
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary: var(--gwt-primary-blue-light);
+  --sidebar-primary-foreground: oklch(0.145 0 0);
   --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-accent-foreground: var(--gwt-secondary-cyan-light);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: var(--gwt-primary-blue-light);
 }
 
 @layer base {
@@ -118,5 +158,139 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* GWT Custom Utilities */
+@layer utilities {
+  .bg-gwt-primary {
+    background-color: var(--gwt-primary-blue);
+  }
+  
+  .bg-gwt-primary-dark {
+    background-color: var(--gwt-primary-blue-dark);
+  }
+  
+  .bg-gwt-primary-darker {
+    background-color: var(--gwt-primary-blue-darker);
+  }
+  
+  .bg-gwt-primary-light {
+    background-color: var(--gwt-primary-blue-light);
+  }
+  
+  .bg-gwt-secondary {
+    background-color: var(--gwt-secondary-cyan);
+  }
+  
+  .bg-gwt-secondary-dark {
+    background-color: var(--gwt-secondary-cyan-dark);
+  }
+  
+  .bg-gwt-secondary-light {
+    background-color: var(--gwt-secondary-cyan-light);
+  }
+  
+  .text-gwt-primary {
+    color: var(--gwt-primary-blue);
+  }
+  
+  .text-gwt-primary-dark {
+    color: var(--gwt-primary-blue-dark);
+  }
+  
+  .text-gwt-secondary {
+    color: var(--gwt-secondary-cyan);
+  }
+  
+  .border-gwt-primary {
+    border-color: var(--gwt-primary-blue);
+  }
+  
+  .border-gwt-primary-dark {
+    border-color: var(--gwt-primary-blue-dark);
+  }
+  
+  .bg-gwt-gradient {
+    background: linear-gradient(135deg, var(--gwt-primary-blue) 0%, var(--gwt-primary-blue-light) 50%, var(--gwt-secondary-cyan) 100%);
+  }
+  
+  .bg-gwt-gradient-reverse {
+    background: linear-gradient(135deg, var(--gwt-secondary-cyan) 0%, var(--gwt-primary-blue-light) 50%, var(--gwt-primary-blue) 100%);
+  }
+  
+  /* Hover States */
+  .hover\:bg-gwt-primary-hover:hover {
+    background-color: var(--gwt-primary-blue-hover);
+  }
+  
+  .hover\:bg-gwt-primary-dark:hover {
+    background-color: var(--gwt-primary-blue-dark);
+  }
+  
+  .hover\:bg-gwt-primary-darker:hover {
+    background-color: var(--gwt-primary-blue-darker);
+  }
+  
+  .hover\:bg-gwt-secondary-hover:hover {
+    background-color: var(--gwt-secondary-cyan-hover);
+  }
+  
+  .hover\:bg-gwt-secondary-dark:hover {
+    background-color: var(--gwt-secondary-cyan-dark);
+  }
+  
+  /* Button Variants */
+  .btn-gwt-primary {
+    background-color: var(--gwt-primary-blue);
+    color: white;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .btn-gwt-primary:hover {
+    background-color: var(--gwt-primary-blue-hover);
+  }
+  
+  .btn-gwt-primary:active {
+    background-color: var(--gwt-primary-blue-darker);
+  }
+  
+  .btn-gwt-secondary {
+    background-color: var(--gwt-secondary-cyan);
+    color: white;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .btn-gwt-secondary:hover {
+    background-color: var(--gwt-secondary-cyan-hover);
+  }
+  
+  .btn-gwt-secondary:active {
+    background-color: var(--gwt-secondary-cyan-dark);
+  }
+  
+  /* Outline Button Variants */
+  .btn-gwt-outline-primary {
+    background-color: transparent;
+    color: var(--gwt-primary-blue);
+    border: 2px solid var(--gwt-primary-blue);
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .btn-gwt-outline-primary:hover {
+    background-color: var(--gwt-primary-blue);
+    color: white;
+  }
+  
+  .btn-gwt-outline-secondary {
+    background-color: transparent;
+    color: var(--gwt-secondary-cyan);
+    border: 2px solid var(--gwt-secondary-cyan);
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .btn-gwt-outline-secondary:hover {
+    background-color: var(--gwt-secondary-cyan);
+    color: white;
   }
 }

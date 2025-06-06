@@ -241,7 +241,7 @@ export const FormCreate: React.FC<FormCreateProps> = ({
                       <FormLabel>Category</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select a category" />
                           </SelectTrigger>
                         </FormControl>
@@ -267,7 +267,7 @@ export const FormCreate: React.FC<FormCreateProps> = ({
                       <FormLabel>Author</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select an author" />
                           </SelectTrigger>
                         </FormControl>

@@ -9,7 +9,8 @@ import {
   Category,
   Tag,
   PostFilters,
-  PartialUpdatePostRequest
+  PartialUpdatePostRequest,
+  Author,
 } from '@/components/blog/types/blog'
 
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
@@ -78,7 +79,7 @@ class BlogAPI {
 
   // Create new post
   async createPost(data: CreatePostRequest): Promise<BlogPostResponse> {
-    return this.fetchWithAuth('/api/blogs/posts', {
+    return this.fetchWithAuth('/api/blogs/admin/posts', {
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -87,7 +88,7 @@ class BlogAPI {
   // Update post
   async updatePost(data: UpdatePostRequest | PartialUpdatePostRequest): Promise<BlogPostResponse> {
     const { id, ...updateData } = data
-    return this.fetchWithAuth(`/api/blogs/posts/${id}`, {
+    return this.fetchWithAuth(`/api/blogs/admin/posts/${id}`, {
       method: 'PUT',
       body: JSON.stringify(updateData),
     })
@@ -95,7 +96,7 @@ class BlogAPI {
 
   // Delete post
   async deletePost(id: string): Promise<DeletePostResponse> {
-    return this.fetchWithAuth(`/api/blogs/posts/${id}`, {
+    return this.fetchWithAuth(`/api/blogs/admin/posts/${id}`, {
       method: 'DELETE',
     })
   }
@@ -174,6 +175,11 @@ class BlogAPI {
   // Get tags
   async getTags(): Promise<{ success: boolean; tags: Tag[] }> {
     return this.fetchWithAuth('/api/blogs/tags')
+  }
+
+  // Get Author
+  async getAuthors(): Promise<{ success: boolean; authors: Author[] }> {
+    return this.fetchWithAuth(`/api/blogs/authors`)
   }
 }
 

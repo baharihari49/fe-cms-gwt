@@ -4,7 +4,7 @@ import * as React from "react"
 import {
   LayoutDashboard,
   FileText,
-  Image,
+  ImageIcon,
   Users,
   Settings,
   Layers,
@@ -16,6 +16,7 @@ import {
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
+import Image from "next/image"
 import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
@@ -65,7 +66,7 @@ navMain: [
   {
     title: "Media",
     url: "/media",
-    icon: Image,
+    icon: ImageIcon,
     items: [
       { title: "Library", url: "/media" },
       { title: "Add New", url: "/media/upload" },
@@ -138,7 +139,7 @@ navMain: [
     {
       name: "Media Organizer",
       url: "/projects/media",
-      icon: Image,
+      icon: ImageIcon,
     },
     {
       name: "User Directory",
@@ -152,7 +153,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <Image
+          src="https://res.cloudinary.com/du0tz73ma/image/upload/c_crop,h_2190,w_4321/v1748670695/gwt-projects/LOGO_GWT_9_pye1l5.png"
+          alt="CMS Logo"
+          width={100}
+          height={100}
+        />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
