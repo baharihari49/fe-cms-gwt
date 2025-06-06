@@ -4,7 +4,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { SimpleDataTable } from "@/components/blog/simple-data-table"
+import { EnhancedDataTable } from "@/components/blog/data-table"
 import { createColumns } from "@/components/blog/columns"
 import { blogAPI } from "@/lib/api/blog"
 import {
@@ -186,7 +186,7 @@ export default function BlogPostsPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <SimpleDataTable
+      <EnhancedDataTable
         columns={columns}
         data={posts}
         totalCount={totalCount}

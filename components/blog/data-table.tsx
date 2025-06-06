@@ -509,7 +509,7 @@ export function EnhancedDataTable<TData, TValue>({
       )}
 
       {/* Table */}
-      <Card>
+      <Card className="">
         <CardContent className="p-0">
           <div className="rounded-md border">
             <Table>
