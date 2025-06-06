@@ -129,7 +129,7 @@ export default function BlogPostsPage() {
   }, [filters.limit])
 
   const handleCreateNew = React.useCallback(() => {
-    router.push("/blog/posts/create")
+    router.push("/blog/posts/new")
   }, [router])
 
   const handleEdit = React.useCallback((post: BlogPost) => {
