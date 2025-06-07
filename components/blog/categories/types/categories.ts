@@ -1,3 +1,4 @@
+// components/blog/categories/types/categories.ts
 
 export interface Category {
   id: string
@@ -9,19 +10,20 @@ export interface Category {
   postCount: number
   createdAt: string
   updatedAt: string
+  _count?: {
+    posts: number
+  }
 }
 
 export interface CreateCategoryRequest {
   name: string
-  slug: string
-  description?: string
-  icon?: string
-  color?: string
+  description: string
+  icon: string
+  color: string
 }
 
 export interface UpdateCategoryRequest {
   name?: string
-  slug?: string
   description?: string
   icon?: string
   color?: string

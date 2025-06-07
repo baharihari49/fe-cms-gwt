@@ -1,0 +1,53 @@
+name: Deployment of fe cms gwt
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Dependencies
+        run: |
+          npm install --legacy-peer-deps
+
+      - name: Build Project
+        run: |
+          npm run build
+
+      - name: Deploy Next.js Project
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # Adjust paths based on your project setup
+          BUILD_DIR=".next"
+
+          # Deploy application files
+          sshpass -p 'c#)rgPMzNC2998@Vb4.M' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ root@147.93.30.80:/var/www/fe-cms-gwt/
+
+      - name: Set Permissions
+        run: |
+          sshpass -p 'c#)rgPMzNC2998@Vb4.M' ssh -o StrictHostKeyChecking=no root@147.93.30.80 '
+            chmod -R 755 /var/www/fe-cms-gwt &&
+            chown -R www-data:www-data /var/www/fe-cms-gwt
+          '
+
+      - name: Restart Server (optional)
+        run: |
+          sshpass -p 'c#)rgPMzNC2998@Vb4.M' ssh -o StrictHostKeyChecking=no root@147.93.30.80 '
+            systemctl restart nginx
+            pm2 restart fe-cms-gwt
+          '
