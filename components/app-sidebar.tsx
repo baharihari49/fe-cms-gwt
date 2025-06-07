@@ -17,14 +17,7 @@ import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import Image from "next/image"
-import { TeamSwitcher } from "@/components/team-switcher"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar"
 
 const data = {
   user: {
@@ -50,7 +43,6 @@ navMain: [
     url: "/dashboard",
     icon: LayoutDashboard,
     isActive: true,
-    items: [],
   },
   {
     title: "Posts",
@@ -104,10 +96,6 @@ navMain: [
     title: "Portfolio",
     url: "/portfolio",
     icon: Layers,
-    items: [
-      { title: "All Projects", url: "/portfolio" },
-      { title: "Add New", url: "/portfolio/new" },
-    ],
   },
   {
     title: "FAQ",
@@ -149,7 +137,7 @@ navMain: [
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -160,13 +148,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           height={100}
         />
       </SidebarHeader>
+
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
+
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   )
