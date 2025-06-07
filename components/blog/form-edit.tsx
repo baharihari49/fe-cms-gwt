@@ -4,7 +4,6 @@
 import * as React from "react"
 import { UseFormReturn } from "react-hook-form"
 import dynamic from 'next/dynamic'
-import { X } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -26,8 +25,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { Badge } from "@/components/ui/badge"
 import { Category, Tag, BlogPost, UpdatePostRequest } from "@/components/blog/types/blog"
+import { TagSelector } from "./tags/tag-selector"
 
 // Dynamic import to avoid SSR issues
 const AdvancedTextEditor = dynamic(() => import('@/components/ui/advanced-text-editor.tsx'), {
@@ -163,65 +162,10 @@ export const FormEdit: React.FC<FormEditProps> = ({
                 <CardTitle>Tags</CardTitle>
               </CardHeader>
               <CardContent>
-                <FormField
-                  control={form.control}
-                  name="tags"
-                  render={() => (
-                    <FormItem>
-                      <FormControl>
-                        <div className="space-y-2">
-                          {/* Selected Tags */}
-                          {selectedTags.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                              {selectedTags.map((tagId) => {
-                                const tag = tags.find(t => t.id === tagId)
-                                return tag ? (
-                                  <Badge key={tagId} variant="secondary" className="px-2 py-1">
-                                    {tag.name}
-                                    <button
-                                      type="button"
-                                      onClick={() => removeTag(tagId)}
-                                      className="ml-1 hover:text-destructive"
-                                    >
-                                      <X className="h-3 w-3" />
-                                    </button>
-                                  </Badge>
-                                ) : null
-                              })}
-                            </div>
-                          )}
-
-                          {/* Tag Search */}
-                          <Input
-                            placeholder="Search and select tags..."
-                            value={tagSearch}
-                            onChange={(e) => setTagSearch(e.target.value)}
-                          />
-
-                          {/* Tag Options */}
-                          {tagSearch && filteredTags.length > 0 && (
-                            <div className="border rounded-md p-2 max-h-32 overflow-y-auto">
-                              {filteredTags.slice(0, 10).map((tag) => (
-                                <button
-                                  key={tag.id}
-                                  type="button"
-                                  onClick={() => addTag(tag.id)}
-                                  className="block w-full text-left px-2 py-1 hover:bg-muted rounded text-sm"
-                                >
-                                  {tag.name}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </FormControl>
-                      <FormDescription>
-                        Search and click to add tags to your post
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <TagSelector
+                    selectedTags={selectedTags}
+                    onTagsChange={setSelectedTags}
+                  />
               </CardContent>
             </Card>
           </div>
