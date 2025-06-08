@@ -11,13 +11,20 @@ import {
   Folder,
   UserCircle2,
   HelpCircle,
+  Code, // ← imported for Technology
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import Image from "next/image"
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from "@/components/ui/sidebar"
 
 const data = {
   user: {
@@ -37,86 +44,92 @@ const data = {
       plan: "Basic",
     },
   ],
-navMain: [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: LayoutDashboard,
-    isActive: true,
-  },
-  {
-    title: "Posts",
-    url: "/posts",
-    icon: FileText,
-    items: [
-      { title: "All Posts", url: "/blog/posts" },
-      { title: "Add New", url: "/blog/posts/new" },
-      { title: "Categories", url: "/blog/categories" },
-      { title: "Tags", url: "/blog/tags" },
-    ],
-  },
-  {
-    title: "Media",
-    url: "/media",
-    icon: ImageIcon,
-    items: [
-      { title: "Library", url: "/media" },
-      { title: "Add New", url: "/media/upload" },
-    ],
-  },
-  {
-    title: "Users",
-    url: "/users",
-    icon: Users,
-    items: [
-      { title: "All Users", url: "/users" },
-      { title: "Add New", url: "/users/new" },
-      { title: "Your Profile", url: "/profile" },
-    ],
-  },
-  {
-    title: "Vendor",
-    url: "/vendors",
-    icon: Folder,
-    items: [
-      { title: "List Vendor", url: "/vendors" },
-      { title: "Add New Vendor", url: "/vendors/new" },
-    ],
-  },
-  {
-    title: "Client",
-    url: "/clients",
-    icon: UserCircle2,
-    items: [
-      { title: "List Client", url: "/clients" },
-      { title: "Add New Client", url: "/clients/new" },
-    ],
-  },
-  {
-    title: "Portfolio",
-    url: "/portfolio",
-    icon: Layers,
-  },
-  {
-    title: "FAQ",
-    url: "/faq",
-    icon: HelpCircle,
-    items: [
-      { title: "All Questions", url: "/faq" },
-      { title: "Add FAQ", url: "/faq/new" },
-    ],
-  },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-    items: [
-      { title: "General", url: "/settings/general" },
-      { title: "Appearance", url: "/settings/appearance" },
-      { title: "Permissions", url: "/settings/permissions" },
-    ],
-  },
-],
+  navMain: [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
+      isActive: true,
+    },
+    {
+      title: "Posts",
+      url: "/posts",
+      icon: FileText,
+      items: [
+        { title: "All Posts", url: "/blog/posts" },
+        { title: "Add New", url: "/blog/posts/new" },
+        { title: "Categories", url: "/blog/categories" },
+        { title: "Tags", url: "/blog/tags" },
+      ],
+    },
+    {
+      title: "Media",
+      url: "/media",
+      icon: ImageIcon,
+      items: [
+        { title: "Library", url: "/media" },
+        { title: "Add New", url: "/media/upload" },
+      ],
+    },
+    {
+      title: "Users",
+      url: "/users",
+      icon: Users,
+      items: [
+        { title: "All Users", url: "/users" },
+        { title: "Add New", url: "/users/new" },
+        { title: "Your Profile", url: "/profile" },
+      ],
+    },
+    {
+      title: "Vendor",
+      url: "/vendors",
+      icon: Folder,
+      items: [
+        { title: "List Vendor", url: "/vendors" },
+        { title: "Add New Vendor", url: "/vendors/new" },
+      ],
+    },
+    {
+      title: "Client",
+      url: "/clients",
+      icon: UserCircle2,
+      items: [
+        { title: "List Clients", url: "/clients" },
+        { title: "Testimonial", url: "/testimonial" },
+      ],
+    },
+    {
+      title: "Portfolio",
+      url: "/portfolio",
+      icon: Layers,
+    },
+    {
+      title: "FAQ",
+      url: "/faq",
+      icon: HelpCircle,
+      items: [
+        { title: "All Questions", url: "/faq" },
+        { title: "Add FAQ", url: "/faq/new" },
+      ],
+    },
+    {
+      title: "Settings",
+      url: "/settings",
+      icon: Settings,
+      items: [
+        { title: "General", url: "/settings/general" },
+        { title: "Appearance", url: "/settings/appearance" },
+        { title: "Permissions", url: "/settings/permissions" },
+      ],
+    },
+    {
+      title: "Technology",    // ← new entry
+      url: "/technology",
+      icon: Code,
+      items: [],             // ← zero items
+    },
+  ],
 
   projects: [
     {
