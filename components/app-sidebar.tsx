@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
+// import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import Image from "next/image"
 import {
@@ -62,34 +62,34 @@ const data = {
         { title: "Tags", url: "/blog/tags" },
       ],
     },
-    {
-      title: "Media",
-      url: "/media",
-      icon: ImageIcon,
-      items: [
-        { title: "Library", url: "/media" },
-        { title: "Add New", url: "/media/upload" },
-      ],
-    },
-    {
-      title: "Users",
-      url: "/users",
-      icon: Users,
-      items: [
-        { title: "All Users", url: "/users" },
-        { title: "Add New", url: "/users/new" },
-        { title: "Your Profile", url: "/profile" },
-      ],
-    },
-    {
-      title: "Vendor",
-      url: "/vendors",
-      icon: Folder,
-      items: [
-        { title: "List Vendor", url: "/vendors" },
-        { title: "Add New Vendor", url: "/vendors/new" },
-      ],
-    },
+    // {
+    //   title: "Media",
+    //   url: "/media",
+    //   icon: ImageIcon,
+    //   items: [
+    //     { title: "Library", url: "/media" },
+    //     { title: "Add New", url: "/media/upload" },
+    //   ],
+    // },
+    // {
+    //   title: "Users",
+    //   url: "/users",
+    //   icon: Users,
+    //   items: [
+    //     { title: "All Users", url: "/users" },
+    //     { title: "Add New", url: "/users/new" },
+    //     { title: "Your Profile", url: "/profile" },
+    //   ],
+    // },
+    // {
+    //   title: "Vendor",
+    //   url: "/vendors",
+    //   icon: Folder,
+    //   items: [
+    //     { title: "List Vendor", url: "/vendors" },
+    //     { title: "Add New Vendor", url: "/vendors/new" },
+    //   ],
+    // },
     {
       title: "Client",
       url: "/clients",
@@ -114,39 +114,45 @@ const data = {
       ],
     },
     {
-      title: "Settings",
-      url: "/settings",
-      icon: Settings,
-      items: [
-        { title: "General", url: "/settings/general" },
-        { title: "Appearance", url: "/settings/appearance" },
-        { title: "Permissions", url: "/settings/permissions" },
-      ],
-    },
-    {
       title: "Technology",    // ← new entry
       url: "/technology",
       icon: Code,
       items: [],             // ← zero items
     },
+    {
+      title: "Services",     // ← added Services entry
+      url: "/services",
+      icon: Layers,           // choose an icon, e.g., Layers
+      items: [],             // zero items
+    },
+    // {
+    //   title: "Settings",
+    //   url: "/settings",
+    //   icon: Settings,
+    //   items: [
+    //     { title: "General", url: "/settings/general" },
+    //     { title: "Appearance", url: "/settings/appearance" },
+    //     { title: "Permissions", url: "/settings/permissions" },
+    //   ],
+    // },
   ],
 
   projects: [
-    {
-      name: "Blog Management",
-      url: "/projects/blog",
-      icon: FileText,
-    },
-    {
-      name: "Media Organizer",
-      url: "/projects/media",
-      icon: ImageIcon,
-    },
-    {
-      name: "User Directory",
-      url: "/projects/users",
-      icon: UserCircle2,
-    },
+    // {
+    //   name: "Blog Management",
+    //   url: "/projects/blog",
+    //   icon: FileText,
+    // },
+    // {
+    //   name: "Media Organizer",
+    //   url: "/projects/media",
+    //   icon: ImageIcon,
+    // },
+    // {
+    //   name: "User Directory",
+    //   url: "/projects/users",
+    //   icon: UserCircle2,
+    // },
   ],
 }
 
@@ -164,7 +170,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
 
       <SidebarFooter>
