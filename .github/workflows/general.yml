@@ -8,10 +8,10 @@ on:
     branches:
       - main
 
+      
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
@@ -20,6 +20,17 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
+
+      # ← Insert these two steps ↓
+      - name: Load testing env file
+        run: |
+          if [ -f .env.testing ]; then
+            cp .env.testing .env
+          fi
+
+      - name: Inject API base URL from secret
+        run: |
+          echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .env
 
       - name: Install Dependencies
         run: |
@@ -32,24 +43,9 @@ jobs:
       - name: Deploy Next.js Project
         if: github.ref == 'refs/heads/main'
         run: |
-          # Adjust paths based on your project setup
           BUILD_DIR=".next"
-
-          # Deploy application files
           sshpass -p 'c#)rgPMzNC2998@Vb4.M' rsync -avz --delete --exclude='.env*' \
             -e "ssh -o StrictHostKeyChecking=no" \
             ./ root@147.93.30.80:/var/www/fe-cms-gwt/
 
-      - name: Set Permissions
-        run: |
-          sshpass -p 'c#)rgPMzNC2998@Vb4.M' ssh -o StrictHostKeyChecking=no root@147.93.30.80 '
-            chmod -R 755 /var/www/fe-cms-gwt &&
-            chown -R www-data:www-data /var/www/fe-cms-gwt
-          '
-
-      - name: Restart Server (optional)
-        run: |
-          sshpass -p 'c#)rgPMzNC2998@Vb4.M' ssh -o StrictHostKeyChecking=no root@147.93.30.80 '
-            systemctl restart nginx
-            pm2 restart fe-cms-gwt
-          '
+      # …rest of your steps…
