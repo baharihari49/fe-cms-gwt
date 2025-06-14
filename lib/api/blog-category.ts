@@ -47,7 +47,7 @@ class BlogCategoryAPI {
 
     // Get a single category by ID
     async getCategoryById(id: string): Promise<{ success: boolean, category: Category }> {
-        return this.fetchWithAuth(`/api/blogs/categories/${id}`)
+        return this.fetchWithAuth(`/api/blogs/admin/categories/${id}`)
     }
 
     //Create a new category
