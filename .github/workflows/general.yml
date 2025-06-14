@@ -53,7 +53,7 @@ jobs:
             USER=root
           fi
 
-          sshpass -p "${{ secrets[ matrix.server.secret ] }}" rsync -avz --delete --exclude='.env*' \
+          sshpass -p "${{ secrets[ matrix.server.secret ] }}" rsync -avz --progress --delete --no-perms --chmod=ugo=rwX --exclude='.env*' \
             -e "ssh -o StrictHostKeyChecking=no" \
             ./ $USER@${{ matrix.server.host }}:/var/www/fe-cms-gwt/
 
@@ -66,6 +66,6 @@ jobs:
           fi
 
           sshpass -p "${{ secrets[ matrix.server.secret ] }}" ssh -o StrictHostKeyChecking=no $USER@${{ matrix.server.host }} << 'EOF'
-            systemctl restart nginx
-            pm2 restart fe-cms-gwt
+            sudo systemctl restart nginx
+            sudo pm2 restart fe-cms-gwt
           EOF
