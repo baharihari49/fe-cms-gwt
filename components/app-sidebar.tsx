@@ -108,6 +108,10 @@ const data = {
       title: "FAQ",
       url: "/faq",
       icon: HelpCircle,
+      items: [
+        {title: "List FAQ", url: '/faq'},
+        {title: "Category", url: "/faq/categories"}
+      ]
     },
     {
       title: "Technology",    // ← new entry
