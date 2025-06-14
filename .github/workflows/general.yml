@@ -10,12 +10,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    # Definisikan array server di matrix
     strategy:
       matrix:
         server:
-          - name: VPS-A         # matrix.server.name pertama
-            host: 147.93.30.80  # matrix.server.host pertama
+          - name: VPS-A
+            host: 147.93.30.80
             secret: VPS1_PASSWORD
           - name: VPS-B
             host: 165.232.165.118
@@ -48,13 +47,25 @@ jobs:
       - name: Deploy to ${{ matrix.server.name }}
         if: github.ref == 'refs/heads/main'
         run: |
+          if [ "${{ matrix.server.host }}" = "165.232.165.118" ]; then
+            USER=bahari
+          else
+            USER=root
+          fi
+
           sshpass -p "${{ secrets[ matrix.server.secret ] }}" rsync -avz --delete --exclude='.env*' \
             -e "ssh -o StrictHostKeyChecking=no" \
-            ./ root@${{ matrix.server.host }}:/var/www/fe-cms-gwt/
+            ./ $USER@${{ matrix.server.host }}:/var/www/fe-cms-gwt/
 
       - name: Restart on ${{ matrix.server.name }}
         run: |
-          sshpass -p "${{ secrets[ matrix.server.secret ] }}" ssh -o StrictHostKeyChecking=no root@${{ matrix.server.host }} << 'EOF'
+          if [ "${{ matrix.server.host }}" = "165.232.165.118" ]; then
+            USER=bahari
+          else
+            USER=root
+          fi
+
+          sshpass -p "${{ secrets[ matrix.server.secret ] }}" ssh -o StrictHostKeyChecking=no $USER@${{ matrix.server.host }} << 'EOF'
             systemctl restart nginx
             pm2 restart fe-cms-gwt
           EOF
