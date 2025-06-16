@@ -2,7 +2,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -30,13 +29,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { companyValueAPI } from '@/lib/api/about'
 import { CompanyValue, CreateCompanyValueRequest, UpdateCompanyValueRequest } from '@/components/aboutUs/types/aboutus'
+import { 
+  getLucideIcon, 
+  searchLucideIcons, 
+  // getIconsByCategory, 
+  // POPULAR_LUCIDE_ICONS 
+} from '@/lib/utils/lucideIcons'
+import * as LucideIcons from 'lucide-react'
+import IconPicker from '@/lib/utils/IconPicker'
 
 const formSchema = z.object({
   icon: z.string().min(1, 'Icon is required').max(50, 'Icon must not exceed 50 characters'),
@@ -66,6 +80,13 @@ const colorOptions = [
   { label: 'Amber to Orange', value: 'bg-gradient-to-r from-amber-500 to-orange-600' },
 ]
 
+// Icon Picker Component
+interface IconPickerProps {
+  value: string
+  onValueChange: (value: string) => void
+}
+
+
 export default function CompanyValueForm({ 
   open, 
   onOpenChange, 
@@ -87,6 +108,7 @@ export default function CompanyValueForm({
   })
 
   const watchedValues = form.watch()
+  const PreviewIcon = getLucideIcon(watchedValues.icon)
 
   useEffect(() => {
     if (editingValue) {
@@ -161,10 +183,13 @@ export default function CompanyValueForm({
                   <FormItem>
                     <FormLabel>Icon</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., 🚀, ⭐, 💡" {...field} />
+                      <IconPicker 
+                        value={field.value} 
+                        onValueChange={field.onChange} 
+                      />
                     </FormControl>
                     <FormDescription>
-                      Use emoji or icon character
+                      Choose from Lucide React icons
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -269,9 +294,11 @@ export default function CompanyValueForm({
                 <CardContent className="p-4">
                   <div className="text-center">
                     <div className={`w-12 h-12 mx-auto mb-3 rounded-lg ${watchedValues.color} flex items-center justify-center`}>
-                      <span className="text-white text-lg">
-                        {watchedValues.icon || '?'}
-                      </span>
+                      {PreviewIcon ? (
+                        <PreviewIcon className="w-6 h-6 text-white" />
+                      ) : (
+                        <span className="text-white text-lg">?</span>
+                      )}
                     </div>
                     <h3 className="font-semibold mb-2">
                       {watchedValues.title || 'Title'}
@@ -294,7 +321,7 @@ export default function CompanyValueForm({
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                {loading && <LucideIcons.Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 {isEditing ? 'Update' : 'Create'}
               </Button>
             </DialogFooter>
