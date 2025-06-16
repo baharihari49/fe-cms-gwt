@@ -12,6 +12,7 @@ import {
   UserCircle2,
   HelpCircle,
   Code, // ← imported for Technology
+  TableOfContents
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -109,8 +110,8 @@ const data = {
       url: "/faq",
       icon: HelpCircle,
       items: [
-        {title: "List FAQ", url: '/faq'},
-        {title: "Category", url: "/faq/categories"}
+        { title: "List FAQ", url: '/faq' },
+        { title: "Category", url: "/faq/categories" }
       ]
     },
     {
@@ -124,6 +125,14 @@ const data = {
       url: "/services",
       icon: Layers,           // choose an icon, e.g., Layers
       items: [],             // zero items
+    },
+    {
+      title: "Contents",     // ← added Services entry
+      url: "#",
+      icon: TableOfContents, // choose an icon, e.g., Layers
+      items: [
+        {title: "About Us", url: "/about"}
+      ],             // zero items
     },
     // {
     //   title: "Settings",
