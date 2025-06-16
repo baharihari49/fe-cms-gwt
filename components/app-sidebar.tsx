@@ -72,16 +72,11 @@ const data = {
     //     { title: "Add New", url: "/media/upload" },
     //   ],
     // },
-    // {
-    //   title: "Users",
-    //   url: "/users",
-    //   icon: Users,
-    //   items: [
-    //     { title: "All Users", url: "/users" },
-    //     { title: "Add New", url: "/users/new" },
-    //     { title: "Your Profile", url: "/profile" },
-    //   ],
-    // },
+    {
+      title: "Teams",
+      url: "/team",
+      icon: Users,
+    },
     // {
     //   title: "Vendor",
     //   url: "/vendors",
