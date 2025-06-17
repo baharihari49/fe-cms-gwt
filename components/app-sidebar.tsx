@@ -126,7 +126,8 @@ const data = {
       url: "#",
       icon: TableOfContents, // choose an icon, e.g., Layers
       items: [
-        {title: "About Us", url: "/about"}
+        {title: "About Us", url: "/about"},
+        {title: "Hero", url: "/hero"}
       ],             // zero items
     },
     // {
