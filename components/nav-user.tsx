@@ -29,6 +29,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useAuth } from "@/hooks/useAuth"
+import { useState } from "react"
 
 export function NavUser({
   user,
@@ -40,6 +42,31 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const { logout } = useAuth()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return // Prevent multiple clicks
+    
+    try {
+      setIsLoggingOut(true)
+      console.log('🚪 NavUser: Starting logout...')
+      
+      const result = await logout()
+      
+      if (result.success) {
+        console.log('✅ NavUser: Logout successful')
+        // Router.push('/login') sudah dipanggil di dalam hook logout
+      } else {
+        console.error('❌ NavUser: Logout failed')
+        // Bisa tambahkan toast notification di sini jika ada
+      }
+    } catch (error) {
+      console.error('❌ NavUser: Logout error:', error)
+    } finally {
+      setIsLoggingOut(false)
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -52,7 +79,9 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {user.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -71,7 +100,9 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {user.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -102,9 +133,13 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="cursor-pointer"
+            >
               <LogOut />
-              Log out
+              {isLoggingOut ? 'Logging out...' : 'Log out'}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

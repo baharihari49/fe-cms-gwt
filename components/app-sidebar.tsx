@@ -26,13 +26,9 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { useAuth } from "@/hooks/useAuth"
 
-const data = {
-  user: {
-    name: "Admin CMS",
-    email: "admin@cms.com",
-    avatar: "/avatars/admin.jpg",
-  },
+const staticData = {
   teams: [
     {
       name: "CMS Global",
@@ -63,29 +59,11 @@ const data = {
         { title: "Tags", url: "/blog/tags" },
       ],
     },
-    // {
-    //   title: "Media",
-    //   url: "/media",
-    //   icon: ImageIcon,
-    //   items: [
-    //     { title: "Library", url: "/media" },
-    //     { title: "Add New", url: "/media/upload" },
-    //   ],
-    // },
     {
       title: "Teams",
       url: "/team",
       icon: Users,
     },
-    // {
-    //   title: "Vendor",
-    //   url: "/vendors",
-    //   icon: Folder,
-    //   items: [
-    //     { title: "List Vendor", url: "/vendors" },
-    //     { title: "Add New Vendor", url: "/vendors/new" },
-    //   ],
-    // },
     {
       title: "Client",
       url: "/clients",
@@ -110,58 +88,104 @@ const data = {
       ]
     },
     {
-      title: "Technology",    // ← new entry
+      title: "Technology",
       url: "/technology",
       icon: Code,
-      items: [],             // ← zero items
+      items: [],
     },
     {
-      title: "Services",     // ← added Services entry
+      title: "Services",
       url: "/services",
-      icon: Layers,           // choose an icon, e.g., Layers
-      items: [],             // zero items
+      icon: Layers,
+      items: [],
     },
     {
-      title: "Contents",     // ← added Services entry
+      title: "Contents",
       url: "#",
-      icon: TableOfContents, // choose an icon, e.g., Layers
+      icon: TableOfContents,
       items: [
         {title: "About Us", url: "/about"},
         {title: "Hero", url: "/hero"}
-      ],             // zero items
+      ],
     },
-    // {
-    //   title: "Settings",
-    //   url: "/settings",
-    //   icon: Settings,
-    //   items: [
-    //     { title: "General", url: "/settings/general" },
-    //     { title: "Appearance", url: "/settings/appearance" },
-    //     { title: "Permissions", url: "/settings/permissions" },
-    //   ],
-    // },
   ],
 
   projects: [
-    // {
-    //   name: "Blog Management",
-    //   url: "/projects/blog",
-    //   icon: FileText,
-    // },
-    // {
-    //   name: "Media Organizer",
-    //   url: "/projects/media",
-    //   icon: ImageIcon,
-    // },
-    // {
-    //   name: "User Directory",
-    //   url: "/projects/users",
-    //   icon: UserCircle2,
-    // },
+    // Projects data if needed
   ],
 }
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
+  const { user, loading } = useAuth()
+  const [isClient, setIsClient] = React.useState(false)
+  
+  // Ensure component is hydrated
+  React.useEffect(() => {
+    setIsClient(true)
+  }, [])
+  
+  // Transform user data dari useAuth untuk NavUser component
+  const userData = React.useMemo(() => {
+    if (!user) {
+      return {
+        name: "Guest User",
+        email: "guest@example.com",
+        avatar: "/avatars/default.jpg", // default avatar
+      }
+    }
+
+    return {
+      name: user.name || user.email, // fallback ke email jika name null
+      email: user.email,
+      avatar: "/avatars/admin.jpg", // atau bisa dari user.avatar jika ada field avatar
+    }
+  }, [user])
+
+  // Prevent hydration mismatch by showing consistent UI until client-side
+  if (!isClient) {
+    return (
+      <Sidebar collapsible="icon" {...props}>
+        <SidebarHeader>
+          <Image
+            src="https://res.cloudinary.com/du0tz73ma/image/upload/c_crop,h_2190,w_4321/v1748670695/gwt-projects/LOGO_GWT_9_pye1l5.png"
+            alt="CMS Logo"
+            width={100}
+            height={100}
+          />
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={staticData.navMain} />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={userData} />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+    )
+  }
+
+  // Show loading state only on client-side if auth is still loading
+  if (loading) {
+    return (
+      <Sidebar collapsible="icon" {...props}>
+        <SidebarHeader>
+          <Image
+            src="https://res.cloudinary.com/du0tz73ma/image/upload/c_crop,h_2190,w_4321/v1748670695/gwt-projects/LOGO_GWT_9_pye1l5.png"
+            alt="CMS Logo"
+            width={100}
+            height={100}
+          />
+        </SidebarHeader>
+        <SidebarContent>
+          <div className="p-4 text-center text-sm text-muted-foreground">
+            Loading...
+          </div>
+        </SidebarContent>
+        <SidebarRail />
+      </Sidebar>
+    )
+  }
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -174,12 +198,12 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        {/* <NavProjects projects={data.projects} /> */}
+        <NavMain items={staticData.navMain} />
+        {/* <NavProjects projects={staticData.projects} /> */}
       </SidebarContent>
 
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
 
       <SidebarRail />
