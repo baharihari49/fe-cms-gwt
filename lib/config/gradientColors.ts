@@ -6,7 +6,7 @@ export interface GradientColorOption {
 }
 
 // Comprehensive gradient options - organized by categories
-const baseGradientColorOptions: GradientColorOption[] = [
+export const gradientColorOptions: GradientColorOption[] = [
   // Blue variations
   { id: 'ocean-blue', label: 'Ocean Blue', value: 'bg-gradient-to-r from-blue-500 to-cyan-500', category: 'Blue' },
   { id: 'deep-blue', label: 'Deep Blue', value: 'bg-gradient-to-r from-blue-600 to-blue-800', category: 'Blue' },
@@ -15,6 +15,10 @@ const baseGradientColorOptions: GradientColorOption[] = [
   { id: 'royal-blue', label: 'Royal Blue', value: 'bg-gradient-to-r from-indigo-500 to-blue-600', category: 'Blue' },
   { id: 'navy-blue', label: 'Navy Blue', value: 'bg-gradient-to-r from-blue-900 to-indigo-800', category: 'Blue' },
   { id: 'electric-blue', label: 'Electric Blue', value: 'bg-gradient-to-r from-cyan-400 to-blue-600', category: 'Blue' },
+  { id: 'blue-to-purple', label: 'Blue to Purple', value: 'bg-gradient-to-r from-blue-500 to-purple-600', category: 'Blue' },
+  { id: 'indigo-to-blue', label: 'Indigo to Blue', value: 'bg-gradient-to-r from-indigo-500 to-blue-600', category: 'Blue' },
+  { id: 'blue-to-cyan', label: 'Blue to Cyan', value: 'bg-gradient-to-r from-blue-500 to-cyan-400', category: 'Blue' },
+  { id: 'sky-to-blue', label: 'Sky to Blue', value: 'bg-gradient-to-r from-sky-500 to-blue-400', category: 'Blue' },
   
   // Purple variations
   { id: 'royal-purple', label: 'Royal Purple', value: 'bg-gradient-to-r from-purple-500 to-indigo-500', category: 'Purple' },
@@ -24,6 +28,10 @@ const baseGradientColorOptions: GradientColorOption[] = [
   { id: 'cosmic-purple', label: 'Cosmic Purple', value: 'bg-gradient-to-r from-indigo-600 to-purple-700', category: 'Purple' },
   { id: 'lavender', label: 'Lavender', value: 'bg-gradient-to-r from-purple-300 to-violet-300', category: 'Purple' },
   { id: 'mystic-purple', label: 'Mystic Purple', value: 'bg-gradient-to-r from-violet-600 to-indigo-600', category: 'Purple' },
+  { id: 'purple-to-pink', label: 'Purple to Pink', value: 'bg-gradient-to-r from-purple-500 to-pink-600', category: 'Purple' },
+  { id: 'purple-to-pink-available', label: 'Purple to Pink', value: 'bg-gradient-to-r from-purple-500 to-pink-400', category: 'Purple' },
+  { id: 'indigo-to-purple', label: 'Indigo to Purple', value: 'bg-gradient-to-r from-indigo-500 to-purple-400', category: 'Purple' },
+  { id: 'violet-to-purple', label: 'Violet to Purple', value: 'bg-gradient-to-r from-violet-500 to-purple-400', category: 'Purple' },
   
   // Green variations
   { id: 'forest-green', label: 'Forest Green', value: 'bg-gradient-to-r from-green-500 to-emerald-500', category: 'Green' },
@@ -33,6 +41,9 @@ const baseGradientColorOptions: GradientColorOption[] = [
   { id: 'dark-forest-green', label: 'Dark Forest', value: 'bg-gradient-to-r from-green-700 to-emerald-700', category: 'Green' },
   { id: 'spring-green', label: 'Spring Green', value: 'bg-gradient-to-r from-lime-300 to-green-400', category: 'Green' },
   { id: 'jungle-green', label: 'Jungle Green', value: 'bg-gradient-to-r from-green-600 to-emerald-800', category: 'Green' },
+  { id: 'green-to-teal', label: 'Green to Teal', value: 'bg-gradient-to-r from-green-500 to-teal-600', category: 'Green' },
+  { id: 'green-to-emerald', label: 'Green to Emerald', value: 'bg-gradient-to-r from-green-500 to-emerald-400', category: 'Green' },
+  { id: 'teal-to-green', label: 'Teal to Green', value: 'bg-gradient-to-r from-teal-500 to-green-600', category: 'Green' },
   
   // Orange/Red variations
   { id: 'sunset-orange', label: 'Sunset Orange', value: 'bg-gradient-to-r from-orange-500 to-pink-500', category: 'Orange' },
@@ -42,6 +53,11 @@ const baseGradientColorOptions: GradientColorOption[] = [
   { id: 'volcano', label: 'Volcano', value: 'bg-gradient-to-r from-red-600 to-orange-600', category: 'Orange' },
   { id: 'autumn-fire', label: 'Autumn Fire', value: 'bg-gradient-to-r from-red-500 to-yellow-500', category: 'Orange' },
   { id: 'cherry-red', label: 'Cherry Red', value: 'bg-gradient-to-r from-red-400 to-rose-500', category: 'Orange' },
+  { id: 'orange-to-red', label: 'Orange to Red', value: 'bg-gradient-to-r from-orange-500 to-red-600', category: 'Orange' },
+  { id: 'orange-to-red-available', label: 'Orange to Red', value: 'bg-gradient-to-r from-orange-500 to-red-400', category: 'Orange' },
+  { id: 'yellow-to-orange', label: 'Yellow to Orange', value: 'bg-gradient-to-r from-yellow-500 to-orange-600', category: 'Orange' },
+  { id: 'yellow-to-orange-available', label: 'Yellow to Orange', value: 'bg-gradient-to-r from-yellow-500 to-orange-400', category: 'Orange' },
+  { id: 'red-to-pink', label: 'Red to Pink', value: 'bg-gradient-to-r from-red-500 to-pink-400', category: 'Orange' },
   
   // Pink variations
   { id: 'cotton-candy', label: 'Cotton Candy', value: 'bg-gradient-to-r from-pink-400 to-purple-500', category: 'Pink' },
@@ -51,6 +67,8 @@ const baseGradientColorOptions: GradientColorOption[] = [
   { id: 'soft-pink', label: 'Soft Pink', value: 'bg-gradient-to-r from-pink-200 to-rose-200', category: 'Pink' },
   { id: 'hot-pink', label: 'Hot Pink', value: 'bg-gradient-to-r from-pink-500 to-fuchsia-600', category: 'Pink' },
   { id: 'bubblegum', label: 'Bubblegum', value: 'bg-gradient-to-r from-pink-300 to-purple-400', category: 'Pink' },
+  { id: 'pink-to-rose', label: 'Pink to Rose', value: 'bg-gradient-to-r from-pink-500 to-rose-600', category: 'Pink' },
+  { id: 'pink-to-rose-available', label: 'Pink to Rose', value: 'bg-gradient-to-r from-pink-500 to-rose-400', category: 'Pink' },
   
   // Yellow/Gold variations
   { id: 'golden-hour', label: 'Golden Hour', value: 'bg-gradient-to-r from-yellow-400 to-orange-500', category: 'Yellow' },
@@ -97,55 +115,6 @@ const baseGradientColorOptions: GradientColorOption[] = [
   { id: 'cream', label: 'Cream', value: 'bg-gradient-to-r from-orange-50 to-amber-100', category: 'Light' },
   { id: 'soft-lavender', label: 'Soft Lavender', value: 'bg-gradient-to-r from-purple-50 to-pink-100', category: 'Light' },
 ];
-
-const newColorOptions = [
-  { value: "bg-gradient-to-r from-blue-500 to-purple-600", label: "Blue to Purple" },
-  { value: "bg-gradient-to-r from-green-500 to-teal-600", label: "Green to Teal" },
-  { value: "bg-gradient-to-r from-orange-500 to-red-600", label: "Orange to Red" },
-  { value: "bg-gradient-to-r from-pink-500 to-rose-600", label: "Pink to Rose" },
-  { value: "bg-gradient-to-r from-indigo-500 to-blue-600", label: "Indigo to Blue" },
-  { value: "bg-gradient-to-r from-purple-500 to-pink-600", label: "Purple to Pink" },
-  { value: "bg-gradient-to-r from-yellow-500 to-orange-600", label: "Yellow to Orange" },
-  { value: "bg-gradient-to-r from-teal-500 to-green-600", label: "Teal to Green" },
-];
-
-const availableColors = [
-  { name: "Blue to Cyan", value: "from-blue-500 to-cyan-400" },
-  { name: "Green to Emerald", value: "from-green-500 to-emerald-400" },
-  { name: "Purple to Pink", value: "from-purple-500 to-pink-400" },
-  { name: "Red to Pink", value: "from-red-500 to-pink-400" },
-  { name: "Orange to Red", value: "from-orange-500 to-red-400" },
-  { name: "Yellow to Orange", value: "from-yellow-500 to-orange-400" },
-  { name: "Sky to Blue", value: "from-sky-500 to-blue-400" },
-  { name: "Indigo to Purple", value: "from-indigo-500 to-purple-400" },
-  { name: "Violet to Purple", value: "from-violet-500 to-purple-400" },
-  { name: "Pink to Rose", value: "from-pink-500 to-rose-400" },
-];
-
-// Combine all color options, removing duplicates based on 'value'
-export const gradientColorOptions: GradientColorOption[] = (() => {
-  const combinedOptions: GradientColorOption[] = [...baseGradientColorOptions];
-  const seenValues = new Set<string>(baseGradientColorOptions.map(option => option.value));
-  const seenIds = new Set<string>(baseGradientColorOptions.map(option => option.id));
-
-  const addOption = (option: { value: string; label?: string; name?: string; category?: string }) => {
-    const fullValue = option.value.startsWith('bg-gradient-to-r') ? option.value : `bg-gradient-to-r ${option.value}`;
-    const label = option.label || option.name || ''; // Ensure label is always a string
-    const category = option.category || 'New Additions';
-    const id = (label.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'unnamed') + '-' + Math.random().toString(36).substring(2, 9); // Ensure id is valid even if label is empty
-
-    if (!seenValues.has(fullValue)) {
-      combinedOptions.push({ id, value: fullValue, label, category });
-      seenValues.add(fullValue);
-      seenIds.add(id);
-    }
-  };
-
-  newColorOptions.forEach(addOption);
-  availableColors.forEach(addOption);
-
-  return combinedOptions;
-})();
 
 // Helper functions
 export const getGradientsByCategory = (category: string): GradientColorOption[] => {

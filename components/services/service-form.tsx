@@ -62,39 +62,6 @@ interface ServiceFormProps {
   onSuccess: () => void
 }
 
-const colorOptions = [
-  { value: "bg-gradient-to-r from-blue-500 to-purple-600", label: "Blue to Purple" },
-  { value: "bg-gradient-to-r from-green-500 to-teal-600", label: "Green to Teal" },
-  { value: "bg-gradient-to-r from-orange-500 to-red-600", label: "Orange to Red" },
-  { value: "bg-gradient-to-r from-pink-500 to-rose-600", label: "Pink to Rose" },
-  { value: "bg-gradient-to-r from-indigo-500 to-blue-600", label: "Indigo to Blue" },
-  { value: "bg-gradient-to-r from-purple-500 to-pink-600", label: "Purple to Pink" },
-  { value: "bg-gradient-to-r from-yellow-500 to-orange-600", label: "Yellow to Orange" },
-  { value: "bg-gradient-to-r from-teal-500 to-green-600", label: "Teal to Green" },
-]
-
-// Get popular lucide icons
-const getPopularIcons = () => {
-  const popularIconNames = [
-    'Code', 'Palette', 'Smartphone', 'Rocket', 'Zap', 'Settings', 'BarChart3',
-    'Globe', 'Shield', 'TrendingUp', 'Lightbulb', 'Target', 'Wrench', 'FileText',
-    'Camera', 'Search', 'Heart', 'Star', 'Gamepad2', 'Database', 'Cloud',
-    'Monitor', 'Headphones', 'Mail', 'MessageSquare', 'Video', 'Image',
-    'Lock', 'Users', 'Calendar', 'Clock', 'MapPin', 'Wifi', 'Bluetooth',
-    'Battery', 'Download', 'Upload', 'Refresh', 'Play', 'Pause', 'Volume2',
-    'Mic', 'Coffee', 'Home', 'Building', 'Car', 'Plane', 'Ship', 'Truck'
-  ]
-
-  return popularIconNames
-    .map(name => {
-      const IconComponent = (LucideIcons as any)[name]
-      return IconComponent ? { name, component: IconComponent } : null
-    })
-    .filter((icon): icon is { name: string; component: any } => icon !== null)
-}
-
-const iconOptions = getPopularIcons()
-
 export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceFormProps) {
   const [loading, setLoading] = useState(false)
   const [technologies, setTechnologies] = useState<Technology[]>([])

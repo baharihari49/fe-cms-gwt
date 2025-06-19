@@ -3,12 +3,16 @@
 
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import IconPicker from "@/lib/utils/IconPicker"
+import GradientColorFormField from "@/components/GradientColorFormField"
 
 interface DetailsTabProps {
   control: any
@@ -80,8 +84,15 @@ export function DetailsTab({ control }: DetailsTabProps) {
               <FormItem>
                 <FormLabel>Icon</FormLabel>
                 <FormControl>
-                  <Input placeholder="Icon name or URL" {...field} />
+                  <IconPicker
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  />
                 </FormControl>
+                <FormDescription>
+                  Choose from Lucide React icons
+                </FormDescription>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -89,12 +100,14 @@ export function DetailsTab({ control }: DetailsTabProps) {
             control={control}
             name="color"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Color/Gradient</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., bg-gradient-to-r from-blue-500" {...field} />
-                </FormControl>
-              </FormItem>
+              <GradientColorFormField
+                field={field}
+                label="Gradient Color"
+                placeholder="Select a gradient color"
+                description="Choose from beautiful gradient combinations"
+                showPreview={false} // We'll show preview below
+                showCategories={true}
+              />
             )}
           />
         </div>

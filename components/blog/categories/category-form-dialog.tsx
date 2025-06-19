@@ -99,33 +99,6 @@ const iconMap = {
   Lightbulb
 }
 
-// Available icons for selection - menggunakan array string yang konsisten
-const AVAILABLE_ICONS = [
-  "Code",
-  "Globe",
-  "Smartphone",
-  "TrendingUp",
-  "Shield",
-  "Cloud",
-  "Link",
-  "Palette",
-  "Database",
-  "Brain",
-  "Settings",
-  "Zap",
-  "Monitor",
-  "Server",
-  "Terminal",
-  "Layers",
-  "Package",
-  "Rocket",
-  "Target",
-  "Award",
-  "BookOpen",
-  "FileText",
-  "Lightbulb"
-] as const
-
 export function CategoryFormDialog({
   open,
   onOpenChange,
@@ -270,7 +243,6 @@ export function CategoryFormDialog({
                     description="Choose from beautiful gradient combinations"
                     showPreview={false} // We'll show preview below
                     showCategories={true}
-                    categoryFilter={['Blue', 'Purple', 'Green', 'Orange', 'Pink', 'Yellow']} // Filter for blog-appropriate colors
                   />
                 )}
               />
