@@ -50,7 +50,6 @@ import {
   FileText,
   Lightbulb,
 } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { gradientColorOptions } from "@/lib/config/gradientColors"
@@ -165,7 +164,7 @@ export function CategoryFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto z-10">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Edit Category" : "Create New Category"}

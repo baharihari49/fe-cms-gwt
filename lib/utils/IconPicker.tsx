@@ -40,7 +40,7 @@ export default function IconPicker({ value, onValueChange }: IconPickerProps) {
         keyName === 'createElement' ||
         keyName === 'default'
       ) {
-        console.log(`Skipping utility: ${keyName}`)
+        // console.log(`Skipping utility: ${keyName}`)
         return
       }
       
@@ -50,10 +50,10 @@ export default function IconPicker({ value, onValueChange }: IconPickerProps) {
         component: iconComponent as LucideIcon
       })
       
-      console.log(`Added icon: ${keyName}`)
+      // console.log(`Added icon: ${keyName}`)
     })
     
-    console.log(`Total icons processed: ${icons.length}`)
+    // console.log(`Total icons processed: ${icons.length}`)
     
     // Sort icons alphabetically
     return icons.sort((a, b) => a.name.localeCompare(b.name))

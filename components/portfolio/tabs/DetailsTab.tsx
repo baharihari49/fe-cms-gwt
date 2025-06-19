@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import IconPicker from "@/lib/utils/IconPicker"
 import GradientColorFormField from "@/components/GradientColorFormField"
+import CloudinaryImageUpload from "@/components/CloudinaryImageUpload"
 
 interface DetailsTabProps {
   control: any
@@ -64,19 +65,29 @@ export function DetailsTab({ control }: DetailsTabProps) {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <FormField
-            control={control}
-            name="image"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Main Image URL</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://..." {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+        {/* Main Image Upload Section */}
+        <FormField
+          control={control}
+          name="image"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Main Image</FormLabel>
+              <FormControl>
+                <CloudinaryImageUpload
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Upload project main image"
+                />
+              </FormControl>
+              <FormDescription>
+                Upload the main project image. Recommended size: 1200×800px
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={control}
             name="icon"

@@ -16,7 +16,6 @@ export const gradientColorOptions: GradientColorOption[] = [
   { id: 'navy-blue', label: 'Navy Blue', value: 'bg-gradient-to-r from-blue-900 to-indigo-800', category: 'Blue' },
   { id: 'electric-blue', label: 'Electric Blue', value: 'bg-gradient-to-r from-cyan-400 to-blue-600', category: 'Blue' },
   { id: 'blue-to-purple', label: 'Blue to Purple', value: 'bg-gradient-to-r from-blue-500 to-purple-600', category: 'Blue' },
-  { id: 'indigo-to-blue', label: 'Indigo to Blue', value: 'bg-gradient-to-r from-indigo-500 to-blue-600', category: 'Blue' },
   { id: 'blue-to-cyan', label: 'Blue to Cyan', value: 'bg-gradient-to-r from-blue-500 to-cyan-400', category: 'Blue' },
   { id: 'sky-to-blue', label: 'Sky to Blue', value: 'bg-gradient-to-r from-sky-500 to-blue-400', category: 'Blue' },
   

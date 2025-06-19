@@ -1,4 +1,4 @@
-name: Deployment of fe cms gwt
+name: General Deployment with Auto Environment
 
 on:
   push:
@@ -29,15 +29,24 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Load testing env file
+      - name: Generate .env file from secrets
         run: |
-          if [ -f .env.testing ]; then
-            cp .env.testing .env
-          fi
+          echo "Creating .env file from GitHub secrets..."
+          cat > .env << EOF
+          NEXT_PUBLIC_API_BASE_URL=${{ secrets.API_BASE_URL }}
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+          EOF
+          echo ".env file created successfully"
 
-      - name: Inject API base URL from secret
+      - name: Verify .env file (optional - for debugging)
         run: |
-          echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .env
+          echo "Environment variables set:"
+          echo "API_BASE_URL: ${{ secrets.API_BASE_URL }}"
+          echo "CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}"
+          echo "CLOUDINARY_API_KEY: [HIDDEN]"
+          echo "CLOUDINARY_API_SECRET: [HIDDEN]"
 
       - name: Install dependencies & build
         run: |
@@ -58,7 +67,7 @@ jobs:
             -e "ssh -o StrictHostKeyChecking=no" \
             ./ $USER@${{ matrix.server.host }}:/var/www/fe-cms-gwt/ || echo "Rsync failed on ${{ matrix.server.name }}"
 
-      - name: Restart on ${{ matrix.server.name }}
+      - name: Create .env on server and restart services
         run: |
           if [ "${{ matrix.server.host }}" = "165.232.165.118" ]; then
             USER=bahari
@@ -67,6 +76,16 @@ jobs:
           fi
 
           sshpass -p "${{ secrets[ matrix.server.secret ] }}" ssh -o StrictHostKeyChecking=no $USER@${{ matrix.server.host }} << 'EOF'
+            # Create .env file on server
+            cd /var/www/fe-cms-gwt/
+            cat > .env << ENVEOF
+          NEXT_PUBLIC_API_BASE_URL=${{ secrets.API_BASE_URL }}
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+          ENVEOF
+            
+            # Restart services
             systemctl restart nginx
             pm2 restart fe-cms-gwt || pm2 start ecosystem.config.js --name fe-cms-gwt
           EOF
