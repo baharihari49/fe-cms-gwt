@@ -16,6 +16,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -37,6 +38,8 @@ import * as LucideIcons from "lucide-react"
 import { Service, Technology } from "@/components/services/types/services"
 import { serviceAPI } from "@/lib/api/services"
 import { technologyAPI } from "@/lib/api/technology"
+import GradientColorFormField from "../GradientColorFormField"
+import IconPicker from "@/lib/utils/IconPicker"
 
 const formSchema = z.object({
   icon: z.string().min(1, "Icon is required"),
@@ -81,7 +84,7 @@ const getPopularIcons = () => {
     'Battery', 'Download', 'Upload', 'Refresh', 'Play', 'Pause', 'Volume2',
     'Mic', 'Coffee', 'Home', 'Building', 'Car', 'Plane', 'Ship', 'Truck'
   ]
-  
+
   return popularIconNames
     .map(name => {
       const IconComponent = (LucideIcons as any)[name]
@@ -126,12 +129,12 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
   const loadTechnologies = async () => {
     setLoadingTechnologies(true)
     try {
-        const response = await technologyAPI.getTechnologies()
-        if (response.success && response.data) {
-            setTechnologies(response.data)
-        } else {
-            setTechnologies([])
-        }
+      const response = await technologyAPI.getTechnologies()
+      if (response.success && response.data) {
+        setTechnologies(response.data)
+      } else {
+        setTechnologies([])
+      }
     } catch (error) {
       console.error("Failed to load technologies:", error)
       toast.error("Failed to load technologies")
@@ -148,7 +151,7 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
         subtitle: service.subtitle,
         description: service.description,
         color: service.color,
-        features: service.features.length > 0 
+        features: service.features.length > 0
           ? service.features.map(f => ({ name: f.name }))
           : [{ name: "" }],
         technologies: service.technologies.map(t => t.technologyId.toString()),
@@ -187,7 +190,7 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
       } else {
         await serviceAPI.createService(submitData)
       }
-      
+
       onSuccess()
       onOpenChange(false)
       form.reset()
@@ -207,8 +210,8 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
             {isEdit ? "Edit Service" : "Add New Service"}
           </DialogTitle>
           <DialogDescription>
-            {isEdit 
-              ? "Update the service information below." 
+            {isEdit
+              ? "Update the service information below."
               : "Fill in the information below to add a new service."
             }
           </DialogDescription>
@@ -222,45 +225,16 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
                 name="icon"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Icon *</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select icon">
-                            {field.value && (() => {
-                              const selectedIcon = iconOptions.find(icon => icon.name === field.value)
-                              if (selectedIcon) {
-                                const IconComponent = selectedIcon.component
-                                return (
-                                  <div className="flex items-center gap-2">
-                                    <IconComponent className="h-4 w-4" />
-                                    <span>{selectedIcon.name}</span>
-                                  </div>
-                                )
-                              }
-                              return field.value
-                            })()}
-                          </SelectValue>
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="max-h-[300px]">
-                        <div className="p-2">
-                          <div className="grid grid-cols-2 gap-1">
-                            {iconOptions.map((icon) => {
-                              const IconComponent = icon.component
-                              return (
-                                <SelectItem key={icon.name} value={icon.name}>
-                                  <div className="flex items-center gap-2 min-w-0">
-                                    <IconComponent className="h-4 w-4 flex-shrink-0" />
-                                    <span className="text-sm truncate">{icon.name}</span>
-                                  </div>
-                                </SelectItem>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Icon</FormLabel>
+                    <FormControl>
+                      <IconPicker
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Choose from Lucide React icons
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -270,27 +244,14 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
                 control={form.control}
                 name="color"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Color *</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select color" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {colorOptions.map((color) => (
-                          <SelectItem key={color.value} value={color.value}>
-                            <div className="flex items-center gap-2">
-                              <div className={`w-4 h-4 rounded ${color.value}`} />
-                              <span>{color.label}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
+                  <GradientColorFormField
+                    field={field}
+                    label="Gradient Color"
+                    placeholder="Select a gradient color"
+                    description="Choose from beautiful gradient combinations"
+                    showPreview={false} // We'll show preview below
+                    showCategories={true}
+                  />
                 )}
               />
             </div>
@@ -302,9 +263,9 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
                 <FormItem>
                   <FormLabel>Title *</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="e.g. Web Development" 
-                      {...field} 
+                    <Input
+                      placeholder="e.g. Web Development"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -319,9 +280,9 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
                 <FormItem>
                   <FormLabel>Subtitle *</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="e.g. Modern & Responsive Websites" 
-                      {...field} 
+                    <Input
+                      placeholder="e.g. Modern & Responsive Websites"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -336,10 +297,10 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
                 <FormItem>
                   <FormLabel>Description *</FormLabel>
                   <FormControl>
-                    <Textarea 
+                    <Textarea
                       placeholder="Describe the service in detail..."
                       rows={4}
-                      {...field} 
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -358,9 +319,9 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
                       render={({ field }) => (
                         <FormItem className="flex-1">
                           <FormControl>
-                            <Input 
+                            <Input
                               placeholder={`Feature ${index + 1}`}
-                              {...field} 
+                              {...field}
                             />
                           </FormControl>
                           <FormMessage />
@@ -420,7 +381,7 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
                         ) : null
                       })}
                     </div>
-                    <Select 
+                    <Select
                       onValueChange={(value) => {
                         if (value && !field.value?.includes(value)) {
                           field.onChange([...(field.value || []), value])
@@ -456,9 +417,9 @@ export function ServiceForm({ service, open, onOpenChange, onSuccess }: ServiceF
             />
 
             <div className="flex justify-end space-x-2 pt-4">
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={loading}
               >

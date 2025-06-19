@@ -22,21 +22,8 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -51,6 +38,8 @@ import {
 } from '@/lib/utils/lucideIcons'
 import * as LucideIcons from 'lucide-react'
 import IconPicker from '@/lib/utils/IconPicker'
+import { GradientColorFormField } from '@/components/GradientColorFormField'
+import { gradientColorOptions } from '@/lib/config/gradientColors'
 
 const formSchema = z.object({
   icon: z.string().min(1, 'Icon is required').max(50, 'Icon must not exceed 50 characters'),
@@ -69,24 +58,6 @@ interface CompanyValueFormProps {
   editingValue?: CompanyValue | null
 }
 
-const colorOptions = [
-  { label: 'Blue to Purple', value: 'bg-gradient-to-r from-blue-500 to-purple-600' },
-  { label: 'Green to Blue', value: 'bg-gradient-to-r from-green-500 to-blue-600' },
-  { label: 'Purple to Pink', value: 'bg-gradient-to-r from-purple-500 to-pink-600' },
-  { label: 'Orange to Red', value: 'bg-gradient-to-r from-orange-500 to-red-600' },
-  { label: 'Teal to Green', value: 'bg-gradient-to-r from-teal-500 to-green-600' },
-  { label: 'Indigo to Blue', value: 'bg-gradient-to-r from-indigo-500 to-blue-600' },
-  { label: 'Rose to Pink', value: 'bg-gradient-to-r from-rose-500 to-pink-600' },
-  { label: 'Amber to Orange', value: 'bg-gradient-to-r from-amber-500 to-orange-600' },
-]
-
-// Icon Picker Component
-interface IconPickerProps {
-  value: string
-  onValueChange: (value: string) => void
-}
-
-
 export default function CompanyValueForm({ 
   open, 
   onOpenChange, 
@@ -102,7 +73,7 @@ export default function CompanyValueForm({
       icon: '',
       title: '',
       description: '',
-      color: colorOptions[0].value,
+      color: gradientColorOptions[0].value,
       order: 0,
     },
   })
@@ -124,7 +95,7 @@ export default function CompanyValueForm({
         icon: '',
         title: '',
         description: '',
-        color: colorOptions[0].value,
+        color: gradientColorOptions[0].value,
         order: 0,
       })
     }
@@ -159,7 +130,7 @@ export default function CompanyValueForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? 'Edit Company Value' : 'Add Company Value'}
@@ -258,32 +229,19 @@ export default function CompanyValueForm({
               )}
             />
 
-            {/* Color */}
+            {/* Color - Using Separated Component */}
             <FormField
               control={form.control}
               name="color"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Color Theme</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a color theme" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {colorOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          <div className="flex items-center space-x-2">
-                            <div className={`w-4 h-4 rounded ${option.value}`} />
-                            <span>{option.label}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
+                <GradientColorFormField
+                  field={field}
+                  label="Gradient Color Theme"
+                  placeholder="Select a gradient color"
+                  description="Choose from our curated collection of beautiful gradients"
+                  showPreview={true}
+                  showCategories={true}
+                />
               )}
             />
 
@@ -291,21 +249,26 @@ export default function CompanyValueForm({
             <div className="space-y-2">
               <FormLabel>Preview</FormLabel>
               <Card>
-                <CardContent className="p-4">
+                <CardContent className="p-6">
                   <div className="text-center">
-                    <div className={`w-12 h-12 mx-auto mb-3 rounded-lg ${watchedValues.color} flex items-center justify-center`}>
+                    <div className={`w-16 h-16 mx-auto mb-4 rounded-xl ${watchedValues.color} flex items-center justify-center shadow-lg`}>
                       {PreviewIcon ? (
-                        <PreviewIcon className="w-6 h-6 text-white" />
+                        <PreviewIcon className="w-8 h-8 text-white" />
                       ) : (
-                        <span className="text-white text-lg">?</span>
+                        <span className="text-white text-2xl">?</span>
                       )}
                     </div>
-                    <h3 className="font-semibold mb-2">
+                    <h3 className="font-semibold text-lg mb-2">
                       {watchedValues.title || 'Title'}
                     </h3>
                     <p className="text-sm text-muted-foreground">
                       {watchedValues.description || 'Description will appear here'}
                     </p>
+                    <div className="mt-3">
+                      <Badge variant="outline" className="text-xs">
+                        Order: {watchedValues.order}
+                      </Badge>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

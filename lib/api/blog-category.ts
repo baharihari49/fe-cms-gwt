@@ -47,12 +47,12 @@ class BlogCategoryAPI {
 
     // Get a single category by ID
     async getCategoryById(id: string): Promise<{ success: boolean, category: Category }> {
-        return this.fetchWithAuth(`/api/blogs/admin/categories/${id}`)
+        return this.fetchWithAuth(`/api/blogs/categories/${id}`)
     }
 
     //Create a new category
     async createCategory(data: CreateCategoryRequest): Promise<{ success: boolean, category: Category }> {
-        return this.fetchWithAuth('/api/blogs/categories', {
+        return this.fetchWithAuth('/api/blogs/admin/categories', {
             method: 'POST',
             body: JSON.stringify(data),
         })
@@ -60,7 +60,7 @@ class BlogCategoryAPI {
 
     // Update an existing category
     async updateCategory(id: string, data: UpdateCategoryRequest): Promise<{ success: boolean, category: Category }> {
-        return this.fetchWithAuth(`/api/blogs/categories/${id}`, {
+        return this.fetchWithAuth(`/api/blogs/admin/categories/${id}`, {
             method: 'PUT',
             body: JSON.stringify(data),
         })
@@ -68,7 +68,7 @@ class BlogCategoryAPI {
 
     // Delete a category
     async deleteCategory(id: string): Promise<{ success: boolean }> {
-        return this.fetchWithAuth(`/api/blogs/categories/${id}`, {
+        return this.fetchWithAuth(`/api/blogs/admin/categories/${id}`, {
             method: 'DELETE',
         })
     }
