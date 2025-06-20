@@ -1,28 +1,33 @@
 // components/CloudinaryImageUpload.tsx
 'use client'
 
-import { Upload, X, Image as ImageIcon, Link, Check, AlertCircle, RefreshCw } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Link, Check, AlertCircle, RefreshCw, Trash2, AlertTriangle } from 'lucide-react';
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useCloudinaryImage } from '@/hooks/useCloudinary';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface ImagePreviewProps {
     url: string;
     onRemove?: (imageUrl: string, publicId: string | null) => void;
     isDeleting?: boolean;
+    extractPublicId: (url: string) => string | null;
 }
 
-
-interface ImagePreviewProps {
-    url: string;
-    onRemove?: (imageUrl: string, publicId: string | null) => void;
-    isDeleting?: boolean;
-    extractPublicId: (url: string) => string | null; // <--- ADD THIS LINE
-}
-
-const ImagePreview: React.FC<ImagePreviewProps> = ({ url, onRemove, isDeleting, extractPublicId }) => { // <--- ADD extractPublicId HERE
+const ImagePreview: React.FC<ImagePreviewProps> = ({ url, onRemove, isDeleting, extractPublicId }) => {
     const [imageStatus, setImageStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
     const [retryCount, setRetryCount] = useState(0);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     React.useEffect(() => {
         if (url) {
@@ -65,11 +70,11 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ url, onRemove, isDeleting, 
         }
     };
 
-    const handleRemove = () => {
+    const handleConfirmDelete = () => {
         if (onRemove) {
-            // Extract public_id using the passed utility function
-            const publicId = extractPublicId(url); // <--- CHANGE THIS LINE
+            const publicId = extractPublicId(url);
             onRemove(url, publicId);
+            setShowDeleteDialog(false);
         }
     };
 
@@ -83,22 +88,90 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ url, onRemove, isDeleting, 
                     Image Preview
                 </h4>
                 {onRemove && (
-                    <button
-                        type="button"
-                        onClick={handleRemove}
-                        disabled={isDeleting}
-                        className={cn(
-                            "p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors",
-                            isDeleting && "opacity-50 cursor-not-allowed"
-                        )}
-                        title={isDeleting ? "Deleting..." : "Remove image"}
-                    >
-                        {isDeleting ? (
-                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-red-500 border-t-transparent"></div>
-                        ) : (
-                            <X className="h-4 w-4" />
-                        )}
-                    </button>
+                    <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                        <AlertDialogTrigger asChild>
+                            <button
+                                type="button"
+                                disabled={isDeleting}
+                                className={cn(
+                                    "inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors border border-red-200 hover:border-red-300",
+                                    isDeleting && "opacity-50 cursor-not-allowed"
+                                )}
+                                title={isDeleting ? "Deleting..." : "Delete image permanently"}
+                            >
+                                {isDeleting ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-3 w-3 border-2 border-red-500 border-t-transparent"></div>
+                                        <span>Deleting...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Trash2 className="h-3 w-3" />
+                                        <span>Delete</span>
+                                    </>
+                                )}
+                            </button>
+                        </AlertDialogTrigger>
+                        
+                        <AlertDialogContent className="max-w-md">
+                            <AlertDialogHeader>
+                                <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+                                    <AlertTriangle className="h-5 w-5" />
+                                    Delete Image Permanently?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription asChild>
+                                    <div className="space-y-3 text-left">
+                                        <div>
+                                            This action will <strong>permanently delete</strong> the image from Cloudinary storage.
+                                        </div>
+                                        
+                                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                            <h4 className="font-medium text-yellow-800 mb-1">⚠️ Database Impact:</h4>
+                                            <div className="text-sm text-yellow-700">
+                                                All projects using this image will have their image field automatically cleared to prevent broken links.
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                            <div className="text-xs text-gray-600 font-mono break-all">
+                                                {url}
+                                            </div>
+                                        </div>
+
+                                        <div className="text-sm text-gray-600">
+                                            <strong>This action cannot be undone.</strong> Make sure you want to permanently remove this image.
+                                        </div>
+                                    </div>
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            
+                            <AlertDialogFooter>
+                                <AlertDialogCancel 
+                                    className="border-gray-300 hover:bg-gray-50"
+                                    disabled={isDeleting}
+                                >
+                                    Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction
+                                    onClick={handleConfirmDelete}
+                                    disabled={isDeleting}
+                                    className="bg-red-600 hover:bg-red-700 focus:ring-red-500"
+                                >
+                                    {isDeleting ? (
+                                        <>
+                                            <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent mr-2"></div>
+                                            Deleting...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Trash2 className="h-3 w-3 mr-2" />
+                                            Delete Permanently
+                                        </>
+                                    )}
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 )}
             </div>
 
@@ -195,6 +268,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ url, onRemove, isDeleting, 
         </div>
     );
 };
+
 interface CloudinaryImageUploadProps {
     value?: string;
     onChange?: (url: string) => void;
@@ -207,7 +281,6 @@ interface CloudinaryImageUploadProps {
         backendApiUrl?: string;
     };
 }
-
 
 const CloudinaryImageUpload: React.FC<CloudinaryImageUploadProps> = ({
     value = '',
@@ -232,7 +305,7 @@ const CloudinaryImageUpload: React.FC<CloudinaryImageUploadProps> = ({
         deleteError,
         resetUploadState,
         resetDeleteState,
-        extractPublicId // <--- ADD THIS LINE
+        extractPublicId
     } = useCloudinaryImage(value, {
         config,
         onUploadSuccess: (response) => {
@@ -283,10 +356,6 @@ const CloudinaryImageUpload: React.FC<CloudinaryImageUploadProps> = ({
     };
 
     const handleDeleteImage = async (imageUrl: string, publicId: string | null) => {
-        if (!window.confirm('Are you sure you want to delete this image?')) {
-            return;
-        }
-
         await deleteImage(publicId);
     };
 
@@ -432,7 +501,7 @@ const CloudinaryImageUpload: React.FC<CloudinaryImageUploadProps> = ({
                     url={displayUrl}
                     onRemove={handleDeleteImage}
                     isDeleting={isDeleting}
-                    extractPublicId={extractPublicId} // <--- PASS THIS PROP
+                    extractPublicId={extractPublicId}
                 />
             )}
         </div>

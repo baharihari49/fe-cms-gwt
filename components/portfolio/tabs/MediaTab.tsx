@@ -13,7 +13,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Upload, Plus, X, Loader2, Trash2 } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Upload, Plus, X, Loader2, Trash2, AlertTriangle } from "lucide-react"
 import { useCloudinary } from "@/hooks/useCloudinary"
 import { CloudinaryErrorBoundary, ErrorNotification } from "@/utils/error-handler-clodinary"
 
@@ -36,6 +47,8 @@ export function MediaTab({ currentImages, onImagesChange }: MediaTabProps) {
     type: "SCREENSHOT" as const 
   })
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [imageToDelete, setImageToDelete] = useState<{ index: number; image: ImageItem } | null>(null)
 
   // Cloudinary hook with proper configuration
   const {
@@ -111,33 +124,34 @@ export function MediaTab({ currentImages, onImagesChange }: MediaTabProps) {
     }
   }
 
-  const removeImage = async (index: number) => {
-    const imageToRemove = currentImages[index];
-    
-    if (!imageToRemove) return;
+  const initiateRemoveImage = (index: number) => {
+    const image = currentImages[index];
+    if (!image) return;
 
-    // Check if it's a Cloudinary URL
-    const isCloudinaryImage = imageToRemove.url.includes('cloudinary.com');
-    
-    const confirmMessage = isCloudinaryImage 
-      ? 'This will delete the image from Cloudinary permanently. Are you sure?' 
-      : 'Are you sure you want to remove this image?';
-    
-    if (!window.confirm(confirmMessage)) return;
+    setImageToDelete({ index, image });
+    setShowDeleteDialog(true);
+  }
 
+  const confirmRemoveImage = async () => {
+    if (!imageToDelete) return;
+
+    const { index, image } = imageToDelete;
     setDeletingIndex(index);
+    setShowDeleteDialog(false);
 
     try {
-      // If it's a Cloudinary URL, try to delete from Cloudinary
+      // Check if it's a Cloudinary URL and try to delete from Cloudinary
+      const isCloudinaryImage = image.url.includes('cloudinary.com');
+      
       if (isCloudinaryImage) {
-        const publicId = extractPublicId(imageToRemove.url);
+        const publicId = extractPublicId(image.url);
         
         if (!publicId) {
           throw new Error('Could not extract public_id from URL');
         }
 
         // Use the deleteImage function from hook
-        await deleteImage(imageToRemove.url, publicId);
+        await deleteImage(image.url, publicId);
       }
 
     } catch (error: any) {
@@ -150,6 +164,7 @@ export function MediaTab({ currentImages, onImagesChange }: MediaTabProps) {
       
       if (!removeAnyway) {
         setDeletingIndex(null);
+        setImageToDelete(null);
         return;
       }
     }
@@ -161,6 +176,12 @@ export function MediaTab({ currentImages, onImagesChange }: MediaTabProps) {
     onImagesChange(reordered);
     
     setDeletingIndex(null);
+    setImageToDelete(null);
+  }
+
+  const cancelRemoveImage = () => {
+    setShowDeleteDialog(false);
+    setImageToDelete(null);
   }
 
   const getTypeLabel = (type: string) => {
@@ -173,6 +194,8 @@ export function MediaTab({ currentImages, onImagesChange }: MediaTabProps) {
     }
     return labels[type as keyof typeof labels] || type
   }
+
+  const isCloudinaryImage = (url: string) => url.includes('cloudinary.com');
 
   return (
     <CloudinaryErrorBoundary>
@@ -317,7 +340,7 @@ export function MediaTab({ currentImages, onImagesChange }: MediaTabProps) {
                       {getTypeLabel(image.type)}
                     </Badge>
                     <span className="text-xs text-gray-500">#{index + 1}</span>
-                    {image.url.includes('cloudinary.com') && (
+                    {isCloudinaryImage(image.url) && (
                       <Badge variant="secondary" className="text-xs">
                         ☁️ Cloudinary
                       </Badge>
@@ -333,30 +356,130 @@ export function MediaTab({ currentImages, onImagesChange }: MediaTabProps) {
                   )}
 
                   {/* Show Public ID for Cloudinary images */}
-                  {image.url.includes('cloudinary.com') && (
+                  {isCloudinaryImage(image.url) && (
                     <p className="text-xs text-gray-500 mt-1">
                       Public ID: {extractPublicId(image.url) || 'Could not extract'}
                     </p>
                   )}
                 </div>
 
-                {/* Remove Button */}
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeImage(index)}
-                  disabled={deletingIndex === index || isDeleting}
-                  className="flex-shrink-0"
-                >
-                  {deletingIndex === index ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : image.url.includes('cloudinary.com') ? (
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  ) : (
-                    <X className="h-4 w-4" />
-                  )}
-                </Button>
+                {/* Remove Button with Dialog */}
+                <AlertDialog open={showDeleteDialog && imageToDelete?.index === index} onOpenChange={(open) => {
+                  if (!open) cancelRemoveImage();
+                }}>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => initiateRemoveImage(index)}
+                      disabled={deletingIndex === index || isDeleting}
+                      className="flex-shrink-0"
+                    >
+                      {deletingIndex === index ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : isCloudinaryImage(image.url) ? (
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      ) : (
+                        <X className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </AlertDialogTrigger>
+                  
+                  <AlertDialogContent className="max-w-md">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+                        <AlertTriangle className="h-5 w-5" />
+                        {isCloudinaryImage(image.url) ? 'Delete Image Permanently?' : 'Remove Image?'}
+                      </AlertDialogTitle>
+                      <AlertDialogDescription asChild>
+                        <div className="space-y-3 text-left">
+                          {isCloudinaryImage(image.url) ? (
+                            <>
+                              <div>
+                                This action will <strong>permanently delete</strong> the image from Cloudinary storage.
+                              </div>
+                              
+                              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                <h4 className="font-medium text-yellow-800 mb-1">⚠️ Database Impact:</h4>
+                                <div className="text-sm text-yellow-700">
+                                  All projects using this image will have their image field automatically cleared to prevent broken links.
+                                </div>
+                              </div>
+
+                              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                <div className="text-xs text-gray-600 font-mono break-all">
+                                  {image.url}
+                                </div>
+                              </div>
+
+                              <div className="text-sm text-gray-600">
+                                <strong>This action cannot be undone.</strong> Make sure you want to permanently remove this image.
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div>
+                                This will remove the image from this project. The image file itself will not be deleted from its source.
+                              </div>
+
+                              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                <h4 className="font-medium text-blue-800 mb-1">ℹ️ Note:</h4>
+                                <div className="text-sm text-blue-700">
+                                  This is an external URL - only the reference will be removed from this project.
+                                </div>
+                              </div>
+
+                              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                <div className="text-xs text-gray-600 font-mono break-all">
+                                  {image.url}
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    
+                    <AlertDialogFooter>
+                      <AlertDialogCancel 
+                        className="border-gray-300 hover:bg-gray-50"
+                        disabled={deletingIndex === index}
+                      >
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={confirmRemoveImage}
+                        disabled={deletingIndex === index}
+                        className={isCloudinaryImage(image.url) 
+                          ? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
+                          : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500"
+                        }
+                      >
+                        {deletingIndex === index ? (
+                          <>
+                            <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent mr-2"></div>
+                            {isCloudinaryImage(image.url) ? 'Deleting...' : 'Removing...'}
+                          </>
+                        ) : (
+                          <>
+                            {isCloudinaryImage(image.url) ? (
+                              <>
+                                <Trash2 className="h-3 w-3 mr-2" />
+                                Delete Permanently
+                              </>
+                            ) : (
+                              <>
+                                <X className="h-3 w-3 mr-2" />
+                                Remove from Project
+                              </>
+                            )}
+                          </>
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             ))}
             
