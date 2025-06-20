@@ -50,14 +50,15 @@ interface SocialMediaFormProps {
 }
 
 const socialMediaOptions = [
-  { value: 'GitHub', label: 'GitHub' },
-  { value: 'LinkedIn', label: 'LinkedIn' },
-  { value: 'Instagram', label: 'Instagram' },
-  { value: 'Facebook', label: 'Facebook' },
-  { value: 'Twitter', label: 'Twitter' },
-  { value: 'YouTube', label: 'YouTube' },
-  { value: 'TikTok', label: 'TikTok' },
-  { value: 'Email', label: 'Email' },
+  { value: 'WhatsApp', label: 'WhatsApp', placeholder: 'https://wa.me/628123456789' },
+  { value: 'GitHub', label: 'GitHub', placeholder: 'https://github.com/your-company' },
+  { value: 'LinkedIn', label: 'LinkedIn', placeholder: 'https://linkedin.com/company/your-company' },
+  { value: 'Instagram', label: 'Instagram', placeholder: 'https://instagram.com/your-company' },
+  { value: 'Facebook', label: 'Facebook', placeholder: 'https://facebook.com/your-company' },
+  { value: 'Twitter', label: 'Twitter', placeholder: 'https://twitter.com/your-company' },
+  { value: 'YouTube', label: 'YouTube', placeholder: 'https://youtube.com/@your-company' },
+  { value: 'TikTok', label: 'TikTok', placeholder: 'https://tiktok.com/@your-company' },
+  { value: 'Email', label: 'Email', placeholder: 'mailto:contact@your-company.com' },
 ]
 
 export function SocialMediaForm({ socialMedia, onSuccess, onCancel }: SocialMediaFormProps) {
@@ -72,6 +73,39 @@ export function SocialMediaForm({ socialMedia, onSuccess, onCancel }: SocialMedi
       order: socialMedia?.order ?? 0,
     },
   })
+
+  // Get placeholder based on selected platform
+  const selectedPlatform = form.watch('name')
+  const getCurrentPlaceholder = () => {
+    const option = socialMediaOptions.find(opt => opt.value === selectedPlatform)
+    return option?.placeholder || 'https://example.com/your-profile'
+  }
+
+  // Get URL format helper text based on selected platform
+  const getUrlFormatHelper = () => {
+    switch (selectedPlatform) {
+      case 'WhatsApp':
+        return 'Use format: https://wa.me/[country_code][phone_number] (e.g., https://wa.me/628123456789)'
+      case 'Email':
+        return 'Use format: mailto:[email] (e.g., mailto:contact@company.com)'
+      case 'GitHub':
+        return 'Use format: https://github.com/[username] or https://github.com/[organization]'
+      case 'LinkedIn':
+        return 'Use format: https://linkedin.com/in/[profile] or https://linkedin.com/company/[company]'
+      case 'Instagram':
+        return 'Use format: https://instagram.com/[username]'
+      case 'Facebook':
+        return 'Use format: https://facebook.com/[page] or https://facebook.com/[profile]'
+      case 'Twitter':
+        return 'Use format: https://twitter.com/[username] or https://x.com/[username]'
+      case 'YouTube':
+        return 'Use format: https://youtube.com/@[channel] or https://youtube.com/c/[channel]'
+      case 'TikTok':
+        return 'Use format: https://tiktok.com/@[username]'
+      default:
+        return 'Enter the full URL to your social media profile or page.'
+    }
+  }
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true)
@@ -145,12 +179,12 @@ export function SocialMediaForm({ socialMedia, onSuccess, onCancel }: SocialMedi
                 <FormLabel>URL</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="https://github.com/your-company"
+                    placeholder={getCurrentPlaceholder()}
                     {...field}
                   />
                 </FormControl>
                 <FormDescription>
-                  The full URL to your social media profile or page.
+                  {getUrlFormatHelper()}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -184,7 +218,7 @@ export function SocialMediaForm({ socialMedia, onSuccess, onCancel }: SocialMedi
             control={form.control}
             name="isActive"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg p-4 space-y-0">
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 space-y-0">
                 <div className="space-y-0.5">
                   <FormLabel className="text-base">Active</FormLabel>
                   <FormDescription>
@@ -200,6 +234,21 @@ export function SocialMediaForm({ socialMedia, onSuccess, onCancel }: SocialMedi
               </FormItem>
             )}
           />
+
+          {/* Preview section */}
+          {selectedPlatform && form.watch('url') && (
+            <div className="p-4 bg-muted rounded-lg">
+              <FormLabel className="text-sm font-medium">Preview</FormLabel>
+              <div className="mt-2 flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Platform:</span>
+                <span className="text-sm font-medium">{selectedPlatform}</span>
+              </div>
+              <div className="mt-1 flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">URL:</span>
+                <span className="text-sm font-mono break-all">{form.watch('url')}</span>
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-4 justify-end">
             {onCancel && (

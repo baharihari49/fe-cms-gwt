@@ -12,7 +12,8 @@ import {
   UserCircle2,
   HelpCircle,
   Code, // ← imported for Technology
-  TableOfContents
+  TableOfContents,
+  Phone
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -100,12 +101,18 @@ const staticData = {
       items: [],
     },
     {
+      title: "Contacts",
+      url: "/contacts",
+      icon: Phone,
+      items: [],
+    },
+    {
       title: "Contents",
       url: "#",
       icon: TableOfContents,
       items: [
-        {title: "About Us", url: "/about"},
-        {title: "Hero", url: "/hero"}
+        { title: "About Us", url: "/about" },
+        { title: "Hero", url: "/hero" }
       ],
     },
   ],
@@ -118,12 +125,12 @@ const staticData = {
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useAuth()
   const [isClient, setIsClient] = React.useState(false)
-  
+
   // Ensure component is hydrated
   React.useEffect(() => {
     setIsClient(true)
   }, [])
-  
+
   // Transform user data dari useAuth untuk NavUser component
   const userData = React.useMemo(() => {
     if (!user) {
