@@ -24,6 +24,8 @@ const postFormSchema = z.object({
   tags: z.array(z.string()).optional(), // ← Tambahkan .optional()
   readTime: z.string().min(1, "Read time is required"),
   authorId: z.string().min(1, "Author is required"),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
 })
 
 type PostFormValues = z.infer<typeof postFormSchema>
@@ -50,6 +52,8 @@ export default function CreatePostPage() {
       tags: [],
       readTime: "",
       authorId: "",
+      seoTitle: "",
+      seoDescription: "",
     },
   })
 
@@ -70,7 +74,7 @@ export default function CreatePostPage() {
           setTags(tagsRes.tags)
         }
 
-        if( authorsRes.success) {
+        if (authorsRes.success) {
           setAuthors(authorsRes.authors)
         }
       } catch (error) {
@@ -111,26 +115,6 @@ export default function CreatePostPage() {
     values.published = true
     await handleSubmit(values)
   }
-
-  // const addTag = (tagId: string) => {
-  //   if (!selectedTags.includes(tagId)) {
-  //     const newTags = [...selectedTags, tagId]
-  //     setSelectedTags(newTags)
-  //     form.setValue("tags", newTags)
-  //   }
-  //   setTagSearch("")
-  // }
-
-  // const removeTag = (tagId: string) => {
-  //   const newTags = selectedTags.filter(id => id !== tagId)
-  //   setSelectedTags(newTags)
-  //   form.setValue("tags", newTags)
-  // }
-
-  // const filteredTags = tags.filter(tag =>
-  //   tag.name.toLowerCase().includes(tagSearch.toLowerCase()) &&
-  //   !selectedTags.includes(tag.id)
-  // )
 
   return (
     <div className="container mx-auto p-4 max-w-full">

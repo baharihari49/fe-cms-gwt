@@ -19,6 +19,8 @@ export interface BlogPost {
   tags: BlogPostTag[]
   stats: BlogPostStats
   comments: Comment[]
+  seoTitle: string | undefined
+  seoDescription: string | undefined
 }
 
 export interface Author {
@@ -105,6 +107,8 @@ export interface CreatePostRequest {
   tags?: string[]
   readTime: string
   published?: boolean
+  seoTitle?: string | undefined
+  seoDescription?: string | undefined
 }
 
 export interface UpdatePostRequest {
@@ -119,6 +123,8 @@ export interface UpdatePostRequest {
   tags?: string[]
   readTime: string
   published?: boolean
+  seoTitle?: string | undefined
+  seoDescription?: string | undefined
 }
 
 export interface PartialUpdatePostRequest {

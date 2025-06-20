@@ -247,6 +247,57 @@ export const FormEdit: React.FC<FormEditProps> = ({
               </CardContent>
             </Card>
 
+            {/* SEO Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>SEO Settings</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* SEO Title */}
+                <FormField
+                  control={form.control}
+                  name="seoTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>SEO Title</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Optimized title for search engines..."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Title that appears in search results (max 60 characters)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* SEO Description */}
+                <FormField
+                  control={form.control}
+                  name="seoDescription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>SEO Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Meta description for search engines..."
+                          className="min-h-[80px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Description that appears in search results (max 160 characters)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
             {/* Featured Image */}
             <Card>
               <CardHeader>

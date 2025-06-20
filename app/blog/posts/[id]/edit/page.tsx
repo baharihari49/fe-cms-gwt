@@ -22,7 +22,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { blogAPI } from "@/lib/api/blog"
-import { UpdatePostRequest, BlogPost, Category, Tag } from "@/components/blog/types/blog"
+import { UpdatePostRequest, BlogPost, Category, Tag, Author } from "@/components/blog/types/blog"
 
 const postFormSchema = z.object({
   id: z.string().min(1, "ID is required"),
@@ -36,16 +36,11 @@ const postFormSchema = z.object({
   tags: z.array(z.string()).optional(),
   readTime: z.string().min(1, "Read time is required"),
   authorId: z.string().min(1, "Author is required"),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
 })
 
 type PostFormValues = z.infer<typeof postFormSchema>
-
-// Mock authors data
-const mockAuthors = [
-  { id: "cmbhos12s0000wwo713vddath", name: "Bahari", email: "baharihari49@gmail.com" },
-  { id: "2", name: "Jane Smith", email: "jane@example.com" },
-  { id: "3", name: "Bob Johnson", email: "bob@example.com" },
-]
 
 interface EditPostPageProps {
   params: Promise<{
@@ -63,6 +58,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
   const [tagSearch, setTagSearch] = React.useState("")
   const [post, setPost] = React.useState<BlogPost | null>(null)
   const [postId, setPostId] = React.useState<string>("")
+  const [authors, setAuthors] = React.useState<Author[]>([]) // Use state for authors
 
   const form = useForm<PostFormValues>({
     resolver: zodResolver(postFormSchema),
@@ -78,6 +74,8 @@ export default function EditPostPage({ params }: EditPostPageProps) {
       tags: [],
       readTime: "",
       authorId: "",
+      seoTitle: "",
+      seoDescription: "",
     },
   })
 
@@ -94,13 +92,14 @@ export default function EditPostPage({ params }: EditPostPageProps) {
   React.useEffect(() => {
     const fetchData = async () => {
       if (!postId) return
-      
+
       try {
         setInitialLoading(true)
-        const [postRes, categoriesRes, tagsRes] = await Promise.all([
+        const [postRes, categoriesRes, tagsRes, authorsRes] = await Promise.all([
           blogAPI.getPost(postId),
           blogAPI.getCategories(),
           blogAPI.getTags(),
+          blogAPI.getAuthors(),
         ])
 
         if (postRes.success && postRes.post) {
@@ -118,6 +117,8 @@ export default function EditPostPage({ params }: EditPostPageProps) {
             categoryId: postData.categoryId,
             readTime: postData.readTime,
             authorId: postData.authorId,
+            seoDescription: postData.seoDescription || "",
+            seoTitle: postData.seoTitle || ""
           })
 
           // Set selected tags
@@ -131,6 +132,9 @@ export default function EditPostPage({ params }: EditPostPageProps) {
         }
         if (tagsRes.success) {
           setTags(tagsRes.tags)
+        }
+        if (authorsRes.success) {
+          setAuthors(authorsRes.authors)
         }
       } catch (error) {
         console.error("Error fetching data:", error)
@@ -191,7 +195,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
     }
   }
 
-    // const addTag = (tagId: string) => {
+  // const addTag = (tagId: string) => {
   //   if (!selectedTags.includes(tagId)) {
   //     const newTags = [...selectedTags, tagId]
   //     setSelectedTags(newTags)
@@ -307,7 +311,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
         setSelectedTags={setSelectedTags}
         tagSearch={tagSearch}
         setTagSearch={setTagSearch}
-        mockAuthors={mockAuthors}
+        mockAuthors={authors}
         post={post}
       />
     </div>
