@@ -58,6 +58,7 @@ const staticData = {
         { title: "Add New", url: "/blog/posts/new" },
         { title: "Categories", url: "/blog/categories" },
         { title: "Tags", url: "/blog/tags" },
+        { title: "Author", url: "/blog/author" }
       ],
     },
     {
