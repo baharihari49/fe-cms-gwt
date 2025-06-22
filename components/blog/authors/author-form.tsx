@@ -83,15 +83,22 @@ export function AuthorForm({ author, open, onOpenChange, onSuccess }: AuthorForm
   const onSubmit = async (data: FormData) => {
     setLoading(true)
     try {
+      const submitData = {
+        ...data,
+        avatar: data.avatar || "", // Ensure avatar is always a string
+      }
+
       if (isEdit && author) {
         await authorAPI.updateAuthor({
           id: author.id,
-          ...data,
+          ...submitData,
         })
+        toast.success("Author updated successfully")
       } else {
-        await authorAPI.createAuthor(data)
+        await authorAPI.createAuthor(submitData)
+        toast.success("Author created successfully")
       }
-      
+
       onSuccess()
       onOpenChange(false)
       form.reset()
@@ -105,79 +112,72 @@ export function AuthorForm({ author, open, onOpenChange, onSuccess }: AuthorForm
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isEdit ? "Edit Author" : "Add New Author"}
           </DialogTitle>
           <DialogDescription>
-            {isEdit 
-              ? "Update the author information below." 
+            {isEdit
+              ? "Update the author information below."
               : "Fill in the information below to add a new author."
             }
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name *</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="e.g. John Doe" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email *</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="email"
-                      placeholder="e.g. john.doe@example.com" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
+            {/* Avatar Upload Field */}
             <FormField
               control={form.control}
               name="avatar"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Avatar URL</FormLabel>
+                  <FormLabel>Author Avatar</FormLabel>
                   <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="https://example.com/avatar.jpg" 
-                        {...field} 
-                      />
-                      {(watchedAvatar || watchedName) && (
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm text-muted-foreground">Preview:</span>
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={watchedAvatar} alt={watchedName} />
-                            <AvatarFallback>
-                              {watchedName.split(' ').map(n => n[0]).join('').toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
+                    <div className="space-y-3">
+                      {/* Avatar Preview */}
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="h-12 w-12 border-2 border-gray-200 shadow-sm">
+                          <AvatarImage src={watchedAvatar} alt={watchedName} />
+                          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-medium">
+                            {watchedName ? watchedName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'AU'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-900">
+                            {watchedName || "Author Name"}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Profile picture preview
+                          </p>
                         </div>
-                      )}
+                      </div>
+
+                      {/* Simple File Input */}
+                      <div className="space-y-2">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              // Create a preview URL for immediate display
+                              const previewUrl = URL.createObjectURL(file);
+                              field.onChange(previewUrl);
+
+                              // Here you would typically upload to your server
+                              // For now, we'll just use the preview URL
+                            }
+                          }}
+                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg border rounded-md file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer cursor-pointer"
+                        />
+                        <p className="text-xs text-gray-500">
+                          Upload JPG, PNG, or GIF (max 10MB)
+                        </p>
+                      </div>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -185,17 +185,18 @@ export function AuthorForm({ author, open, onOpenChange, onSuccess }: AuthorForm
               )}
             />
 
+
+            {/* Name Field */}
             <FormField
               control={form.control}
-              name="bio"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bio</FormLabel>
+                  <FormLabel>Name *</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Brief biography of the author..."
-                      rows={3}
-                      {...field} 
+                    <Input
+                      placeholder="e.g. John Doe"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -203,16 +204,61 @@ export function AuthorForm({ author, open, onOpenChange, onSuccess }: AuthorForm
               )}
             />
 
-            <div className="flex justify-end space-x-2 pt-4">
-              <Button 
-                type="button" 
-                variant="outline" 
+            {/* Email Field */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email *</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="e.g. john.doe@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Bio Field */}
+            <FormField
+              control={form.control}
+              name="bio"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bio</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Brief biography of the author..."
+                      rows={3}
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-3 pt-6 border-t">
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={loading}
+                className="min-w-[80px]"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading}>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="min-w-[120px]"
+              >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isEdit ? "Update" : "Create"} Author
               </Button>
@@ -220,6 +266,6 @@ export function AuthorForm({ author, open, onOpenChange, onSuccess }: AuthorForm
           </form>
         </Form>
       </DialogContent>
-    </Dialog> 
+    </Dialog>
   )
 }

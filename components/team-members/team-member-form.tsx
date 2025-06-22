@@ -43,7 +43,7 @@ const formSchema = z.object({
   position: z.string().min(2, "Position is required").max(100, "Position too long"),
   department: z.string().min(2, "Department is required").max(100, "Department too long"),
   bio: z.string().min(10, "Bio must be at least 10 characters").max(2000, "Bio too long"),
-  avatar: z.string().url("Must be a valid URL"),
+  avatar: z.string().min(1, "Avatar is required").url("Must be a valid URL"),
   skills: z.array(z.string().min(1, "Skill cannot be empty")).min(1, "At least one skill is required"),
   experience: z.string().min(1, "Experience is required").max(50, "Experience too long"),
   projects: z.string().min(10, "Projects description is required").max(1000, "Projects description too long"),
@@ -121,7 +121,7 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
           teamMemberAPI.getPositions(),
           teamMemberAPI.getSpecialities(),
         ])
-        
+
         if (deptResponse.success) setDepartments(deptResponse.data)
         if (posResponse.success) setPositions(posResponse.data)
         if (specResponse.success) setSpecialities(specResponse.data)
@@ -166,19 +166,19 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
       // Parse achievements safely
       let achievementsArray: any[] = []
       if (Array.isArray(teamMember.achievements)) {
-        achievementsArray = teamMember.achievements.filter(achievement => 
-          achievement && 
-          typeof achievement === 'object' && 
-          achievement.title && 
+        achievementsArray = teamMember.achievements.filter(achievement =>
+          achievement &&
+          typeof achievement === 'object' &&
+          achievement.title &&
           achievement.description
         )
       } else if (typeof teamMember.achievements === 'string') {
         try {
           const parsed = JSON.parse(teamMember.achievements)
-          achievementsArray = Array.isArray(parsed) ? parsed.filter(achievement => 
-            achievement && 
-            typeof achievement === 'object' && 
-            achievement.title && 
+          achievementsArray = Array.isArray(parsed) ? parsed.filter(achievement =>
+            achievement &&
+            typeof achievement === 'object' &&
+            achievement.title &&
             achievement.description
           ) : []
         } catch {
@@ -191,7 +191,7 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
         position: teamMember.position,
         department: teamMember.department,
         bio: teamMember.bio,
-        avatar: teamMember.avatar,
+        avatar: teamMember.avatar || "",
         skills: skillsArray,
         experience: teamMember.experience,
         projects: teamMember.projects,
@@ -266,6 +266,7 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
 
       const submitData = {
         ...data,
+        avatar: data.avatar || "", // Ensure avatar is always a string
         social: cleanSocial,
         achievements: data.achievements?.filter(a => a.title && a.description && a.date) || []
       }
@@ -275,10 +276,12 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
           id: teamMember.id,
           ...submitData,
         })
+        toast.success("Team member updated successfully")
       } else {
         await teamMemberAPI.createTeamMember(submitData)
+        toast.success("Team member created successfully")
       }
-      
+
       onSuccess()
       onOpenChange(false)
       form.reset()
@@ -295,26 +298,82 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isEdit ? "Edit Team Member" : "Add New Team Member"}
           </DialogTitle>
           <DialogDescription>
-            {isEdit 
-              ? "Update the team member information below." 
+            {isEdit
+              ? "Update the team member information below."
               : "Fill in the information below to add a new team member."
             }
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Basic Information</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold border-b pb-2">Basic Information</h3>
+
+              {/* Name and Avatar Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="avatar"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Avatar Image</FormLabel>
+                      <FormControl>
+                        <div className="space-y-3">
+                          {/* Avatar Preview */}
+                          <div className="flex items-center space-x-3">
+                            <Avatar className="h-12 w-12 border-2 border-gray-200 shadow-sm">
+                              <AvatarImage src={watchedAvatar} alt={watchedName} />
+                              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-medium">
+                                {watchedName ? watchedName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'TM'}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-gray-900">
+                                {watchedName || "Team Member Name"}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                Profile picture preview
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Simple File Input */}
+                          <div className="space-y-2">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  // Create a preview URL for immediate display
+                                  const previewUrl = URL.createObjectURL(file);
+                                  field.onChange(previewUrl);
+
+                                  // Here you would typically upload to your server
+                                  // For now, we'll just use the preview URL
+                                  console.log('File selected:', file);
+                                }
+                              }}
+                              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg border rounded-md file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer cursor-pointer"
+                            />
+                            <p className="text-xs text-gray-500">
+                              Upload JPG, PNG, or GIF (max 10MB)
+                            </p>
+                          </div>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="name"
@@ -328,34 +387,10 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                     </FormItem>
                   )}
                 />
-
-                <FormField
-                  control={form.control}
-                  name="avatar"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Avatar URL *</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://example.com/avatar.jpg" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                      {watchedAvatar && (
-                        <div className="flex items-center gap-2 mt-2">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={watchedAvatar} alt="Preview" />
-                            <AvatarFallback>
-                              {watchedName?.split(' ').map(n => n[0]).join('').toUpperCase() || 'NA'}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-sm text-muted-foreground">Preview</span>
-                        </div>
-                      )}
-                    </FormItem>
-                  )}
-                />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Position, Department, Speciality */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="position"
@@ -370,7 +405,7 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                         }
                       }} value={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select position" />
                           </SelectTrigger>
                         </FormControl>
@@ -409,7 +444,7 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                         }
                       }} value={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select department" />
                           </SelectTrigger>
                         </FormControl>
@@ -433,9 +468,7 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="speciality"
@@ -450,7 +483,7 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                         }
                       }} value={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select speciality" />
                           </SelectTrigger>
                         </FormControl>
@@ -474,7 +507,10 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                     </FormItem>
                   )}
                 />
+              </div>
 
+              {/* Experience, Icon, Gradient */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="experience"
@@ -502,98 +538,109 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  control={form.control}
+                  name="gradient"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gradient *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. from-blue-500 to-purple-600" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
-              <FormField
-                control={form.control}
-                name="gradient"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gradient *</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. from-blue-500 to-purple-600" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Bio and Projects */}
+              <div className="grid grid-cols-1 gap-4">
+                <FormField
+                  control={form.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bio *</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Tell us about this team member..."
+                          rows={4}
+                          className="resize-none"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bio *</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Tell us about this team member..."
-                        rows={4}
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="projects"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Projects *</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Describe key projects and contributions..."
-                        rows={3}
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="projects"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Projects *</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Describe key projects and contributions..."
+                          rows={4}
+                          className="resize-none"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
             <Separator />
 
             {/* Skills */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">Skills</h3>
-              
+              <h3 className="text-lg font-semibold border-b pb-2">Skills & Expertise</h3>
+
               <FormField
                 control={form.control}
                 name="skills"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Skills *</FormLabel>
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <div className="flex gap-2">
                         <Input
-                          placeholder="Enter a skill"
+                          placeholder="Enter a skill (e.g. React, Node.js, Python)"
                           value={newSkill}
                           onChange={(e) => setNewSkill(e.target.value)}
                           onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
+                          className="flex-1"
                         />
-                        <Button type="button" onClick={addSkill} size="sm">
-                          <Plus className="h-4 w-4" />
+                        <Button type="button" onClick={addSkill} size="sm" className="px-4">
+                          <Plus className="h-4 w-4 mr-1" />
+                          Add
                         </Button>
                       </div>
-                      <div className="flex flex-wrap gap-2">
-                        {field.value.map((skill, index) => (
-                          <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                            {skill}
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="h-4 w-4 p-0 hover:bg-transparent"
-                              onClick={() => removeSkill(index)}
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </Badge>
-                        ))}
+                      <div className="flex flex-wrap gap-2 min-h-[2rem] p-3 border rounded-lg bg-gray-50">
+                        {field.value.length > 0 ? (
+                          field.value.map((skill, index) => (
+                            <Badge key={index} variant="secondary" className="flex items-center gap-1 px-3 py-1">
+                              {skill}
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="h-4 w-4 p-0 hover:bg-red-100 ml-1"
+                                onClick={() => removeSkill(index)}
+                              >
+                                <X className="h-3 w-3 text-red-500" />
+                              </Button>
+                            </Badge>
+                          ))
+                        ) : (
+                          <p className="text-sm text-gray-500 italic">No skills added yet</p>
+                        )}
                       </div>
                     </div>
                     <FormMessage />
@@ -606,8 +653,8 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
 
             {/* Social Links */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">Social Links</h3>
-              
+              <h3 className="text-lg font-semibold border-b pb-2">Social Links</h3>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -658,7 +705,7 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="email@example.com" {...field} />
+                        <Input type="email" placeholder="email@example.com" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -669,7 +716,7 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                   control={form.control}
                   name="social.website"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="md:col-span-2">
                       <FormLabel>Website</FormLabel>
                       <FormControl>
                         <Input placeholder="https://website.com" {...field} />
@@ -686,22 +733,31 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
             {/* Achievements */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium">Achievements</h3>
-                <Button type="button" onClick={addAchievement} size="sm" variant="outline">
+                <h3 className="text-lg font-semibold border-b pb-2 flex-1">Achievements & Recognition</h3>
+                <Button type="button" onClick={addAchievement} size="sm" variant="outline" className="ml-4">
                   <Award className="mr-2 h-4 w-4" />
                   Add Achievement
                 </Button>
               </div>
 
+              {achievementFields.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <Award className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                  <p>No achievements added yet</p>
+                  <p className="text-sm">Click "Add Achievement" to get started</p>
+                </div>
+              )}
+
               {achievementFields.map((field, index) => (
-                <div key={field.id} className="border rounded-lg p-4 space-y-4">
+                <div key={field.id} className="border rounded-lg p-4 space-y-4 bg-gray-50">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-medium">Achievement {index + 1}</h4>
+                    <h4 className="font-medium text-gray-900">Achievement {index + 1}</h4>
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
                       onClick={() => removeAchievement(index)}
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -730,15 +786,15 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                           <FormLabel>Type</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value || "award"}>
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select type" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="award">Award</SelectItem>
-                              <SelectItem value="certification">Certification</SelectItem>
-                              <SelectItem value="project">Project</SelectItem>
-                              <SelectItem value="recognition">Recognition</SelectItem>
+                              <SelectItem value="award">🏆 Award</SelectItem>
+                              <SelectItem value="certification">📜 Certification</SelectItem>
+                              <SelectItem value="project">🚀 Project</SelectItem>
+                              <SelectItem value="recognition">⭐ Recognition</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -753,7 +809,7 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                         <FormItem>
                           <FormLabel>Date</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g. 2024-01" {...field} />
+                            <Input placeholder="e.g. 2024-01 or January 2024" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -768,10 +824,11 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                       <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                          <Textarea 
+                          <Textarea
                             placeholder="Describe the achievement..."
                             rows={2}
-                            {...field} 
+                            className="resize-none"
+                            {...field}
                           />
                         </FormControl>
                         <FormMessage />
@@ -782,16 +839,22 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
               ))}
             </div>
 
-            <div className="flex justify-end space-x-2 pt-4">
-              <Button 
-                type="button" 
-                variant="outline" 
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-3 pt-6 border-t">
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={loading}
+                className="min-w-[80px]"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading}>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="min-w-[140px]"
+              >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isEdit ? "Update" : "Create"} Team Member
               </Button>
@@ -799,6 +862,6 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
           </form>
         </Form>
       </DialogContent>
-    </Dialog> 
+    </Dialog>
   )
 }
