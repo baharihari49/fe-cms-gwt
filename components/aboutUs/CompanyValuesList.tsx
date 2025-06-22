@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react'
 import { Plus, Edit, Trash2, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
   Select,
@@ -34,6 +34,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { companyValueAPI } from '@/lib/api/about'
 import { CompanyValue, CompanyValuesResponse } from '@/components/aboutUs/types/aboutus'
 import { parseTailwindGradient } from '@/lib/utils/dynamicGradients'
+import * as icons from 'lucide-react'
 
 interface CompanyValuesListProps {
   onEdit: (value: CompanyValue) => void
@@ -115,6 +116,16 @@ export default function CompanyValuesList({
     setDeleteDialog({ open: true, value })
   }
 
+  // Helper function to render icon dynamically
+  const renderIcon = (iconName: string) => {
+    const IconComponent = (icons as any)[iconName]
+    if (IconComponent) {
+      return <IconComponent className="w-6 h-6 text-white" />
+    }
+    // Fallback icon if the specified icon doesn't exist
+    return <icons.Star className="w-6 h-6 text-white" />
+  }
+
   if (loading && companyValues.length === 0) {
     return (
       <div className="space-y-6">
@@ -193,7 +204,7 @@ export default function CompanyValuesList({
                   className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
                   style={{ background: parseTailwindGradient(value.color) }}
                 >
-                  <span className="text-white text-lg">{value.icon}</span>
+                  {renderIcon(value.icon)}
                 </div>
 
                 <DropdownMenu>

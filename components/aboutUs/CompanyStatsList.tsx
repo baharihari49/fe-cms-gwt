@@ -33,6 +33,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { companyStatAPI } from '@/lib/api/about'
 import { CompanyStat, CompanyStatsResponse } from '@/components/aboutUs/types/aboutus'
+import * as icons from 'lucide-react'
 
 interface CompanyStatsListProps {
   onEdit: (stat: CompanyStat) => void
@@ -40,40 +41,40 @@ interface CompanyStatsListProps {
   refreshTrigger: number
 }
 
-export default function CompanyStatsList({ 
-  onEdit, 
-  onCreate, 
-  refreshTrigger 
+export default function CompanyStatsList({
+  onEdit,
+  onCreate,
+  refreshTrigger
 }: CompanyStatsListProps) {
   const [companyStats, setCompanyStats] = useState<CompanyStat[]>([])
   const [loading, setLoading] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
-  
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalItems, setTotalItems] = useState(0)
   const [limit] = useState(12)
-  
+
   // Delete dialog state
   const [deleteDialog, setDeleteDialog] = useState({
     open: false,
     stat: null as CompanyStat | null
   })
-  
+
   // Sort state
   const [sortBy, setSortBy] = useState('order:asc')
 
   const fetchCompanyStats = async () => {
     try {
       setLoading(true)
-      
+
       const response: CompanyStatsResponse = await companyStatAPI.getCompanyStats({
         page: currentPage,
         limit: limit,
         sort: sortBy
       })
-      
+
       if (response.success) {
         setCompanyStats(response.data)
         setTotalPages(response.pagination.pages)
@@ -106,12 +107,12 @@ export default function CompanyStatsList({
     try {
       setDeleteLoading(true)
       await companyStatAPI.deleteCompanyStat(deleteDialog.stat.id)
-      
+
       // toast({
       //   title: "Success",
       //   description: "Company statistic deleted successfully",
       // })
-      
+
       setDeleteDialog({ open: false, stat: null })
       fetchCompanyStats()
     } catch (error) {
@@ -129,6 +130,15 @@ export default function CompanyStatsList({
     setDeleteDialog({ open: true, stat })
   }
 
+  const renderIcon = (iconName: string) => {
+    const IconComponent = (icons as any)[iconName]
+    if (IconComponent) {
+      return <IconComponent className="w-6 h-6 text-primary" />
+    }
+    // Fallback icon if the specified icon doesn't exist
+    return <icons.Star className="w-6 h-6 text-primary" />
+  }
+
   if (loading && companyStats.length === 0) {
     return (
       <div className="space-y-6">
@@ -139,7 +149,7 @@ export default function CompanyStatsList({
           </div>
           <Skeleton className="h-10 w-24" />
         </div>
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <Card key={i}>
@@ -192,7 +202,7 @@ export default function CompanyStatsList({
             </SelectContent>
           </Select>
         </div>
-        
+
         <Badge variant="secondary">
           {totalItems} statistic{totalItems !== 1 ? 's' : ''}
         </Badge>
@@ -206,9 +216,9 @@ export default function CompanyStatsList({
               <div className="text-center space-y-4">
                 {/* Icon */}
                 <div className="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                  <span className="text-primary text-lg">{stat.icon}</span>
+                  {renderIcon(stat.icon)}
                 </div>
-                
+
                 {/* Number */}
                 <div className="space-y-1">
                   <div className="text-3xl font-bold text-foreground">
@@ -218,7 +228,7 @@ export default function CompanyStatsList({
                     {stat.label}
                   </div>
                 </div>
-                
+
                 {/* Meta Info */}
                 <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
                   <Badge variant="outline" className="text-xs">
@@ -226,7 +236,7 @@ export default function CompanyStatsList({
                   </Badge>
                   <span>{new Date(stat.createdAt).toLocaleDateString()}</span>
                 </div>
-                
+
                 {/* Actions */}
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                   <DropdownMenu>
@@ -240,7 +250,7 @@ export default function CompanyStatsList({
                         <Edit className="w-4 h-4 mr-2" />
                         Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => openDeleteDialog(stat)}
                         className="text-destructive"
                       >
@@ -281,7 +291,7 @@ export default function CompanyStatsList({
           <p className="text-sm text-muted-foreground">
             Page {currentPage} of {totalPages}
           </p>
-          
+
           <div className="flex space-x-2">
             <Button
               variant="outline"
@@ -291,7 +301,7 @@ export default function CompanyStatsList({
             >
               Previous
             </Button>
-            
+
             <Button
               variant="outline"
               size="sm"
@@ -305,14 +315,14 @@ export default function CompanyStatsList({
       )}
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialog.open} onOpenChange={(open) => 
+      <AlertDialog open={deleteDialog.open} onOpenChange={(open) =>
         setDeleteDialog({ open, stat: deleteDialog.stat })
       }>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Company Statistic</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this statistic "{deleteDialog.stat?.label}"? 
+              Are you sure you want to delete this statistic "{deleteDialog.stat?.label}"?
               This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
