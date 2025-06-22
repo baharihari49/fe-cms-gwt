@@ -29,6 +29,7 @@ import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { companyStatAPI } from '@/lib/api/about'
 import { CompanyStat, CreateCompanyStatRequest, UpdateCompanyStatRequest } from '@/components/aboutUs/types/aboutus'
+import IconPicker from '@/lib/utils/IconPicker'
 
 const formSchema = z.object({
   icon: z.string().min(1, 'Icon is required').max(50, 'Icon must not exceed 50 characters'),
@@ -46,11 +47,11 @@ interface CompanyStatFormProps {
   editingStat?: CompanyStat | null
 }
 
-export default function CompanyStatForm({ 
-  open, 
-  onOpenChange, 
-  onSuccess, 
-  editingStat 
+export default function CompanyStatForm({
+  open,
+  onOpenChange,
+  onSuccess,
+  editingStat
 }: CompanyStatFormProps) {
   const [loading, setLoading] = useState(false)
   const isEditing = !!editingStat
@@ -120,7 +121,7 @@ export default function CompanyStatForm({
             {isEditing ? 'Edit Company Statistic' : 'Add Company Statistic'}
           </DialogTitle>
           <DialogDescription>
-            {isEditing 
+            {isEditing
               ? 'Update the company statistic information below.'
               : 'Add a new statistic to showcase your company achievements.'
             }
@@ -138,7 +139,10 @@ export default function CompanyStatForm({
                   <FormItem>
                     <FormLabel>Icon</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., 📊, 👥, 🏆, 📈" {...field} />
+                      <IconPicker
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      />
                     </FormControl>
                     <FormDescription>
                       Use emoji or icon character
@@ -156,8 +160,8 @@ export default function CompanyStatForm({
                   <FormItem>
                     <FormLabel>Display Order</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
+                      <Input
+                        type="number"
                         min="0"
                         {...field}
                         onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}

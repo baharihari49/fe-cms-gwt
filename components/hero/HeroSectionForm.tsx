@@ -21,6 +21,8 @@ import { Switch } from '@/components/ui/switch'
 import { toast } from 'sonner'
 import { heroAPI } from '@/lib/api/hero'
 import { HeroSection, CreateHeroSectionRequest, UpdateHeroSectionRequest } from '@/components/hero/types/hero'
+import CloudinaryImageUpload from '../CloudinaryImageUpload'
+import SimpleFileUpload from '../SimpleFileUpload'
 
 const formSchema = z.object({
   welcomeText: z
@@ -194,19 +196,23 @@ export function HeroSectionForm({ heroSection, onSuccess, onCancel }: HeroSectio
             )}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
+          <div className="grid grid-cols-1 gap-4">
+              <FormField
               control={form.control}
               name="logo"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Logo URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://example.com/logo.png" {...field} />
+                    <SimpleFileUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      previewType="logo"
+                      accept="image/*"
+                      maxSize="10MB"
+                      helpText="Upload company logo - JPG, PNG, or SVG (max 10MB)"
+                    />
                   </FormControl>
-                  <FormDescription>
-                    URL to your company logo (optional).
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -219,7 +225,11 @@ export function HeroSectionForm({ heroSection, onSuccess, onCancel }: HeroSectio
                 <FormItem>
                   <FormLabel>Hero Image URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://example.com/hero-image.jpg" {...field} />
+                    <CloudinaryImageUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Upload project main image"
+                    />
                   </FormControl>
                   <FormDescription>
                     URL to the main hero image (optional).

@@ -21,30 +21,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Loader2, Plus, X } from "lucide-react"
 import { Contact } from "./types/contact"
 import { contactAPI } from "@/lib/api/contact"
-
-const colorOptions = [
-  { value: "from-green-500 to-emerald-400", label: "Green", color: "from-green-500 to-emerald-400" },
-  { value: "from-blue-500 to-cyan-400", label: "Blue", color: "from-blue-500 to-cyan-400" },
-  { value: "from-purple-500 to-pink-400", label: "Purple", color: "from-purple-500 to-pink-400" },
-  { value: "from-orange-500 to-red-400", label: "Orange", color: "from-orange-500 to-red-400" },
-  { value: "from-yellow-500 to-amber-400", label: "Yellow", color: "from-yellow-500 to-amber-400" },
-  { value: "from-indigo-500 to-blue-400", label: "Indigo", color: "from-indigo-500 to-blue-400" },
-  { value: "from-pink-500 to-rose-400", label: "Pink", color: "from-pink-500 to-rose-400" },
-  { value: "from-slate-500 to-gray-400", label: "Gray", color: "from-slate-500 to-gray-400" },
-]
+import GradientColorFormField from "../GradientColorFormField"
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title too long"),
@@ -119,7 +101,7 @@ export function ContactForm({ contact, open, onOpenChange, onSuccess }: ContactF
       } else {
         await contactAPI.createContact(submitData)
       }
-      
+
       onSuccess()
       onOpenChange(false)
       form.reset()
@@ -149,8 +131,8 @@ export function ContactForm({ contact, open, onOpenChange, onSuccess }: ContactF
             {isEdit ? "Edit Contact" : "Add New Contact"}
           </DialogTitle>
           <DialogDescription>
-            {isEdit 
-              ? "Update the contact information below." 
+            {isEdit
+              ? "Update the contact information below."
               : "Fill in the information below to add a new contact."
             }
           </DialogDescription>
@@ -165,9 +147,9 @@ export function ContactForm({ contact, open, onOpenChange, onSuccess }: ContactF
                 <FormItem>
                   <FormLabel>Title *</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="e.g. Call Us, Email Us, Visit Us" 
-                      {...field} 
+                    <Input
+                      placeholder="e.g. Call Us, Email Us, Visit Us"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -186,9 +168,9 @@ export function ContactForm({ contact, open, onOpenChange, onSuccess }: ContactF
                     <FormItem>
                       <div className="flex items-center space-x-2">
                         <FormControl>
-                          <Input 
+                          <Input
                             placeholder={`Detail ${index + 1}`}
-                            {...field} 
+                            {...field}
                           />
                         </FormControl>
                         {fields.length > 1 && (
@@ -223,34 +205,14 @@ export function ContactForm({ contact, open, onOpenChange, onSuccess }: ContactF
               control={form.control}
               name="color"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Color *</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a color">
-                          {field.value && (
-                            <div className="flex items-center space-x-2">
-                              <div className={`w-4 h-4 rounded bg-gradient-to-r ${field.value}`}></div>
-                              <span>{colorOptions.find(c => c.value === field.value)?.label}</span>
-                            </div>
-                          )}
-                        </SelectValue>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {colorOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          <div className="flex items-center space-x-2">
-                            <div className={`w-4 h-4 rounded bg-gradient-to-r ${option.color}`}></div>
-                            <span>{option.label}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
+                <GradientColorFormField
+                  field={field}
+                  label="Gradient Color"
+                  placeholder="Select a gradient color"
+                  description="Choose from beautiful gradient combinations"
+                  showPreview={false} // We'll show preview below
+                  showCategories={true}
+                />
               )}
             />
 
@@ -261,9 +223,9 @@ export function ContactForm({ contact, open, onOpenChange, onSuccess }: ContactF
                 <FormItem>
                   <FormLabel>Link (Optional)</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="e.g. tel:+1234567890, mailto:contact@example.com, https://maps.google.com/..." 
-                      {...field} 
+                    <Input
+                      placeholder="e.g. tel:+1234567890, mailto:contact@example.com, https://maps.google.com/..."
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -272,9 +234,9 @@ export function ContactForm({ contact, open, onOpenChange, onSuccess }: ContactF
             />
 
             <div className="flex justify-end space-x-2 pt-4">
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={loading}
               >
@@ -288,6 +250,6 @@ export function ContactForm({ contact, open, onOpenChange, onSuccess }: ContactF
           </form>
         </Form>
       </DialogContent>
-    </Dialog> 
+    </Dialog>
   )
 }

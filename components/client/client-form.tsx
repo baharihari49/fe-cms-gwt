@@ -27,6 +27,7 @@ import { Switch } from "@/components/ui/switch"
 import { Loader2 } from "lucide-react"
 import { Client } from "@/components/client/types/clients"
 import { clientAPI } from "@/lib/api/client"
+import SimpleFileUpload from "../SimpleFileUpload"
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name too long"),
@@ -136,67 +137,15 @@ export function ClientForm({ client, open, onOpenChange, onSuccess }: ClientForm
                 <FormItem>
                   <FormLabel>Client Logo</FormLabel>
                   <FormControl>
-                    <div className="space-y-3">
-                      {/* Logo Preview */}
-                      <div className="flex items-center space-x-3">
-                        <div className="h-12 w-12 rounded-lg border-2 border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shadow-sm">
-                          {watchedImage ? (
-                            <img
-                              src={watchedImage}
-                              alt="Client logo preview"
-                              className="h-full w-full object-contain"
-                              onError={(e) => {
-                                // Fallback to initials if image fails to load
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                                target.nextElementSibling?.classList.remove('hidden');
-                              }}
-                            />
-                          ) : (
-                            <div className="text-xs font-medium text-gray-400 text-center">
-                              {watchedName ? watchedName.substring(0, 2).toUpperCase() : 'CL'}
-                            </div>
-                          )}
-                          {watchedImage && (
-                            <div className="hidden text-xs font-medium text-gray-400 text-center">
-                              {watchedName ? watchedName.substring(0, 2).toUpperCase() : 'CL'}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900">
-                            {watchedName || "Client Name"}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Logo preview
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Simple File Input */}
-                      <div className="space-y-2">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              // Create a preview URL for immediate display
-                              const previewUrl = URL.createObjectURL(file);
-                              field.onChange(previewUrl);
-
-                              // Here you would typically upload to your server
-                              // For now, we'll just use the preview URL
-                              console.log('File selected:', file);
-                            }
-                          }}
-                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg border rounded-md file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer cursor-pointer"
-                        />
-                        <p className="text-xs text-gray-500">
-                          Upload company logo - JPG, PNG, or SVG (max 10MB)
-                        </p>
-                      </div>
-                    </div>
+                    <SimpleFileUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      previewType="logo"
+                      previewName={watchedName}
+                      accept="image/*"
+                      maxSize="10MB"
+                      helpText="Upload company logo - JPG, PNG, or SVG (max 10MB)"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

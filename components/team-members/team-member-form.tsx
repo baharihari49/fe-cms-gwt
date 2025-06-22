@@ -37,6 +37,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Loader2, Plus, X, Award, ExternalLink } from "lucide-react"
 import { TeamMember } from "./types/team-member"
 import { teamMemberAPI } from "@/lib/api/team-member"
+import SimpleFileUpload from "../SimpleFileUpload"
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name too long"),
@@ -326,49 +327,15 @@ export function TeamMemberForm({ teamMember, open, onOpenChange, onSuccess }: Te
                     <FormItem>
                       <FormLabel>Avatar Image</FormLabel>
                       <FormControl>
-                        <div className="space-y-3">
-                          {/* Avatar Preview */}
-                          <div className="flex items-center space-x-3">
-                            <Avatar className="h-12 w-12 border-2 border-gray-200 shadow-sm">
-                              <AvatarImage src={watchedAvatar} alt={watchedName} />
-                              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-medium">
-                                {watchedName ? watchedName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'TM'}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <p className="text-sm font-medium text-gray-900">
-                                {watchedName || "Team Member Name"}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                Profile picture preview
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Simple File Input */}
-                          <div className="space-y-2">
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  // Create a preview URL for immediate display
-                                  const previewUrl = URL.createObjectURL(file);
-                                  field.onChange(previewUrl);
-
-                                  // Here you would typically upload to your server
-                                  // For now, we'll just use the preview URL
-                                  console.log('File selected:', file);
-                                }
-                              }}
-                              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg border rounded-md file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer cursor-pointer"
-                            />
-                            <p className="text-xs text-gray-500">
-                              Upload JPG, PNG, or GIF (max 10MB)
-                            </p>
-                          </div>
-                        </div>
+                        <SimpleFileUpload
+                          value={field.value}
+                          onChange={field.onChange}
+                          previewType="avatar"
+                          previewName={watchedName}
+                          accept="image/*"
+                          maxSize="10MB"
+                          helpText="Upload profile picture - JPG, PNG, or GIF (max 10MB)"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

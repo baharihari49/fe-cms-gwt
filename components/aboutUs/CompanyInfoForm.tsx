@@ -29,6 +29,7 @@ import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { companyInfoAPI } from '@/lib/api/about'
 import { CompanyInfo, CreateCompanyInfoRequest, UpdateCompanyInfoRequest } from '@/components/aboutUs/types/aboutus'
+import CloudinaryImageUpload from '../CloudinaryImageUpload'
 
 const formSchema = z.object({
   companyName: z.string().min(1, 'Company name is required').max(100, 'Company name must not exceed 100 characters'),
@@ -52,11 +53,11 @@ interface CompanyInfoFormProps {
   editingInfo?: CompanyInfo | null
 }
 
-export default function CompanyInfoForm({ 
-  open, 
-  onOpenChange, 
-  onSuccess, 
-  editingInfo 
+export default function CompanyInfoForm({
+  open,
+  onOpenChange,
+  onSuccess,
+  editingInfo
 }: CompanyInfoFormProps) {
   const [loading, setLoading] = useState(false)
   const isEditing = !!editingInfo
@@ -159,7 +160,7 @@ export default function CompanyInfoForm({
             {isEditing ? 'Edit Company Information' : 'Add Company Information'}
           </DialogTitle>
           <DialogDescription>
-            {isEditing 
+            {isEditing
               ? 'Update your company information and story below.'
               : 'Add comprehensive information about your company.'
             }
@@ -171,7 +172,7 @@ export default function CompanyInfoForm({
             {/* Basic Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Basic Information</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -243,10 +244,10 @@ export default function CompanyInfoForm({
                   <FormItem>
                     <FormLabel>Hero Image URL</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="url" 
-                        placeholder="https://example.com/image.jpg" 
-                        {...field} 
+                      <CloudinaryImageUpload
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Upload project main image"
                       />
                     </FormControl>
                     <FormDescription>
@@ -261,7 +262,7 @@ export default function CompanyInfoForm({
             {/* About Section */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">About Section</h3>
-              
+
               <FormField
                 control={form.control}
                 name="aboutHeader"
@@ -302,7 +303,7 @@ export default function CompanyInfoForm({
             {/* Mission and Vision */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Mission & Vision</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -353,7 +354,7 @@ export default function CompanyInfoForm({
             {/* Company Story */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Company Story</h3>
-              
+
               <FormField
                 control={form.control}
                 name="storyText"
