@@ -67,7 +67,7 @@ export function RecentActivities({ activities }: RecentActivitiesProps) {
             activities.slice(0, 6).map((activity) => (
               <div key={activity.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
                 <Avatar className={`h-6 w-6 ${getActivityColor(activity.type)}`}>
-                  <AvatarFallback className="text-white text-xs">
+                  <AvatarFallback className="text-blue-500 text-xs">
                     {getActivityIcon(activity.type)}
                   </AvatarFallback>
                 </Avatar>
