@@ -4,6 +4,7 @@
 import * as React from "react"
 import { UseFormReturn } from "react-hook-form"
 import dynamic from 'next/dynamic'
+import CloudinaryImageUpload from "@/components/CloudinaryImageUpload"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -131,6 +132,29 @@ export const FormEdit: React.FC<FormEditProps> = ({
                   )}
                 />
 
+                {/* Featured Image - Moved here */}
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Featured Image</FormLabel>
+                      <FormControl>
+                        <CloudinaryImageUpload
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="Upload featured image for the blog post"
+                          className="w-full"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Upload or enter a URL for the featured image that will appear in post previews
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 {/* Advanced Content Editor */}
                 <FormField
                   control={form.control}
@@ -187,7 +211,7 @@ export const FormEdit: React.FC<FormEditProps> = ({
                       <FormLabel>Category</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select a category" />
                           </SelectTrigger>
                         </FormControl>
@@ -213,7 +237,7 @@ export const FormEdit: React.FC<FormEditProps> = ({
                       <FormLabel>Author</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select an author" />
                           </SelectTrigger>
                         </FormControl>
@@ -295,43 +319,6 @@ export const FormEdit: React.FC<FormEditProps> = ({
                     </FormItem>
                   )}
                 />
-              </CardContent>
-            </Card>
-
-            {/* Featured Image */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Featured Image</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <FormField
-                  control={form.control}
-                  name="image"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Image URL</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://example.com/image.jpg" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Enter a URL for the featured image
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {form.watch("image") && (
-                  <div className="mt-4">
-                    <img
-                      src={form.watch("image")}
-                      alt="Featured image preview"
-                      className="w-full h-32 object-cover rounded-md"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none'
-                      }}
-                    />
-                  </div>
-                )}
               </CardContent>
             </Card>
 

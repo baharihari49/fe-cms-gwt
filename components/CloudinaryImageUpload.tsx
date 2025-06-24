@@ -256,15 +256,6 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ url, onRemove, isDeleting, 
                     </div>
                 </div>
             </div>
-
-            <details className="text-xs text-gray-500">
-                <summary className="cursor-pointer hover:text-gray-700">Debug Info</summary>
-                <div className="mt-2 space-y-1 bg-gray-100 p-2 rounded font-mono">
-                    <div>Status: {imageStatus}</div>
-                    <div>Retry Count: {retryCount}</div>
-                    <div>URL Length: {url.length} chars</div>
-                </div>
-            </details>
         </div>
     );
 };
