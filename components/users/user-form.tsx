@@ -41,7 +41,7 @@ const formSchema = z.object({
     if (val === undefined || val === '') return true;
     return val.length >= 6;
   }, "Password must be at least 6 characters"),
-  role: z.enum(["USER", "ADMIN"], { 
+  role: z.enum(["ADMIN"], { 
     required_error: "Please select a role" 
   }),
 })
@@ -66,7 +66,7 @@ export function UserForm({ user, open, onOpenChange, onSuccess }: UserFormProps)
       name: "",
       email: "",
       password: "",
-      role: "USER",
+      role: "ADMIN",
     },
   })
 
@@ -83,7 +83,7 @@ export function UserForm({ user, open, onOpenChange, onSuccess }: UserFormProps)
         name: "",
         email: "",
         password: "",
-        role: "USER",
+        role: "ADMIN",
       })
     }
   }, [user, form])
@@ -241,12 +241,11 @@ export function UserForm({ user, open, onOpenChange, onSuccess }: UserFormProps)
                       disabled={loading}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select a role" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="USER">User</SelectItem>
+                      <SelectContent defaultValue={"ADMIN"}>
                         <SelectItem value="ADMIN">Admin</SelectItem>
                       </SelectContent>
                     </Select>

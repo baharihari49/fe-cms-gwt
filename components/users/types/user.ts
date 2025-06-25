@@ -3,7 +3,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: 'USER' | 'ADMIN';
+  role: 'ADMIN';
   createdAt: string;
   updatedAt: string;
 }
@@ -12,14 +12,14 @@ export interface CreateUserData {
   name: string;
   email: string;
   password: string;
-  role?: 'USER' | 'ADMIN';
+  role?: 'ADMIN';
 }
 
 export interface UpdateUserData {
   name?: string;
   email?: string;
   password?: string;
-  role?: 'USER' | 'ADMIN';
+  role?: 'ADMIN';
 }
 
 export interface UserFilters {

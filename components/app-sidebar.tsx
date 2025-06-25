@@ -6,6 +6,7 @@ import {
   FileText,
   ImageIcon,
   Users,
+  User, // ← imported for User
   Settings,
   Layers,
   Folder,
@@ -65,7 +66,12 @@ const staticData = {
       title: "Teams",
       url: "/team",
       icon: Users,
+    },    {
+      title: "Users",
+      url: "/users",
+      icon: User,
     },
+
     {
       title: "Client",
       url: "/clients",
