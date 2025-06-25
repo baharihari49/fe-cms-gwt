@@ -85,6 +85,10 @@ jobs:
           CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
           ENVEOF
             
+            # Set proper permissions for .env file
+            chmod 600 .env
+            chown $USER:$USER .env
+            
             # Restart services
             systemctl restart nginx
             pm2 restart fe-cms-gwt || pm2 start ecosystem.config.js --name fe-cms-gwt
