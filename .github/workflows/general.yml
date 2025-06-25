@@ -10,16 +10,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        server:
-          - name: VPS-A
-            host: 147.93.30.80
-            secret: VPS1_PASSWORD
-          - name: VPS-B
-            host: 165.232.165.118
-            secret: VPS2_PASSWORD
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,29 +43,17 @@ jobs:
           npm install --legacy-peer-deps
           npm run build
 
-      - name: Deploy to ${{ matrix.server.name }}
+      - name: Deploy to VPS-B
         if: github.ref == 'refs/heads/main'
         run: |
-          if [ "${{ matrix.server.host }}" = "165.232.165.118" ]; then
-            USER=bahari
-          else
-            USER=root
-          fi
-
-          sshpass -p "${{ secrets[ matrix.server.secret ] }}" rsync -avz --delete --exclude='.env*' \
+          sshpass -p "${{ secrets.VPS2_PASSWORD }}" rsync -avz --delete --exclude='.env*' \
             --no-perms --no-owner --no-group \
             -e "ssh -o StrictHostKeyChecking=no" \
-            ./ $USER@${{ matrix.server.host }}:/var/www/fe-cms-gwt/ || echo "Rsync failed on ${{ matrix.server.name }}"
+            ./ bahari@165.232.165.118:/var/www/fe-cms-gwt/ || echo "Rsync failed on VPS-B"
 
       - name: Create .env on server and restart services
         run: |
-          if [ "${{ matrix.server.host }}" = "165.232.165.118" ]; then
-            USER=bahari
-          else
-            USER=root
-          fi
-
-          sshpass -p "${{ secrets[ matrix.server.secret ] }}" ssh -o StrictHostKeyChecking=no $USER@${{ matrix.server.host }} << 'EOF'
+          sshpass -p "${{ secrets.VPS2_PASSWORD }}" ssh -o StrictHostKeyChecking=no bahari@165.232.165.118 << 'EOF'
             # Create .env file on server
             cd /var/www/fe-cms-gwt/
             cat > .env << ENVEOF
@@ -87,7 +65,7 @@ jobs:
             
             # Set proper permissions for .env file
             chmod 600 .env
-            chown $USER:$USER .env
+            chown bahari:bahari .env
             
             # Restart services
             systemctl restart nginx
